@@ -1,0 +1,72 @@
+.text-field:focused {
+    -fx-text-fill: green;
+}
+
+.password-field:focused {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: #000000;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Britannic Bold";
+}
+
+.button:hover {
+    -fx-font-weight: bold;
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-font-size: 20;
+    -fx-text-fill: #000000;
+    -fx-font-family: "Britannic Bold";
+    -fx-border-color: #000000;
+}
+
+.button:pressed {
+    -fx-font-weight: bold;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 30px;
+    -fx-border-radius: 30px;
+    -fx-font-size: 20;
+    -fx-text-fill: #000000;
+    -fx-font-family: "Bell MT";
+    -fx-border-color: #000000;
+    -fx-rotate: 20;
+    -fx-cursor: wait;
+}
+
+.choice-box {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-mark-color: white;
+    -fx-font-family: "Bell MT";
+    -fx-font-size: 16;
+    -fx-border-radius: 20px;
+    -fx-text-alignment: center;
+}
+
+.choice-box > .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.titled-pane {
+    -fx-effect: dropshadow(three-pass-box, #9F9F9F, 15, 0, 0, 0);
+    -fx-animated: true;
+    -fx-text-fill: #505050;
+}
+
+.titled-pane > .title  {
+    -fx-background-radius: 0, 0, 0;
+    -fx-font: bold 14px System;
+    -fx-background-color: white;
+}
+
+.titled-pane:focused > .title > .arrow-button .arrow {
+    -fx-background-color: #606060;
+}
