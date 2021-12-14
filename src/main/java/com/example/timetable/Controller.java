@@ -71,7 +71,7 @@ public class Controller {
 
     @FXML
     void manageTimeTable(ActionEvent event) throws IOException {
-
+        Application.changeScene("manage-timetable.fxml", "Manage TimeTable", 1000, 640);
     }
 
     @FXML

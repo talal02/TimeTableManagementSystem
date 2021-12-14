@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
@@ -55,6 +56,36 @@ public class AdminController implements Initializable {
     @FXML
     private ChoiceBox<String> showTeachers;
 
+    @FXML
+    private TextField classroomId;
+
+    @FXML
+    private Label classroomValidator;
+
+    @FXML
+    private ChoiceBox<String> showClassrooms;
+
+    @FXML
+    private RadioButton isLab;
+
+    @FXML
+    private RadioButton isClass;
+
+    @FXML
+    private Label timetableValidator;
+
+    @FXML
+    private ChoiceBox<String> showDays;
+
+    @FXML
+    private ChoiceBox<String> showDays1;
+
+    @FXML
+    private ChoiceBox<String> showSlots;
+
+    @FXML
+    private ChoiceBox<String> showSlots1;
+
     private Database db;
 
     private static int option = 0;
@@ -64,24 +95,72 @@ public class AdminController implements Initializable {
     }
 
     @FXML
+    void classPressed(ActionEvent event) {
+        if(isClass.selectedProperty().asObject().getValue()) {
+            isLab.selectedProperty().asObject().setValue(false);
+        }
+    }
+
+    @FXML
+    void labPressed(ActionEvent event) {
+        if(isLab.selectedProperty().asObject().getValue()) {
+            isClass.selectedProperty().asObject().setValue(false);
+        }
+    }
+
+    @FXML
+    void addClassroom(ActionEvent event) {
+        if(!Objects.equals(classroomId.getText(), "")) {
+            Vector<Classroom> classrooms = Application.getClassrooms();
+            for(Classroom c : classrooms) {
+                if(Objects.equals(c.getClassroomId(), classroomId.getText())) {
+                    classroomValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                    classroomValidator.setText("Lab/Classroom Already Exists...");
+                    return;
+                }
+            }
+            if(isClass.selectedProperty().asObject().getValue()) {
+                db.addClassroom(classroomId.getText(), "Class", 1);
+                classroomValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
+                classroomValidator.setText("Classroom Added...");
+                initialize(null, null);
+            } else if(isLab.selectedProperty().asObject().getValue()) {
+                db.addClassroom(classroomId.getText(), "Lab", 1);
+                classroomValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
+                classroomValidator.setText("Lab Added...");
+                initialize(null, null);
+            } else {
+                classroomValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                classroomValidator.setText("Kindly Select Lab or Class...");
+            }
+        } else {
+            classroomValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+            classroomValidator.setText("Classroom Id Can't Be Empty...");
+        }
+    }
+
+    @FXML
     void addCourse(ActionEvent event) {
         if(!Objects.equals(cName.getText(), "") && !Objects.equals(cSection.getText(), "") && !Objects.equals(creditHrs.getText(), "") && !Objects.equals(cId.getText(), "")) {
             Vector<Course> courses = Application.getCourses();
             for(Course c : courses) {
                 if(Objects.equals(c.getCourseId(), cId.getText())){
-                    courseValidator.setStyle("-fx-text-fill: red");
+                    courseValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
                     courseValidator.setText("Course Already Exists");
                     return;
                 }
             }
             if(db.addCourse(cId.getText(), cName.getText(), Integer.parseInt(creditHrs.getText()), cSection.getText())) {
-                courseValidator.setStyle("-fx-text-fill: green");
+                courseValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
                 courseValidator.setText("Course Added");
                 initialize(null, null);
             } else {
-                courseValidator.setStyle("-fx-text-fill: red");
+                courseValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
                 courseValidator.setText("Course Addition Failed...");
             }
+        } else {
+            courseValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+            courseValidator.setText("Input Fields Can't be Empty...");
         }
     }
 
@@ -95,6 +174,23 @@ public class AdminController implements Initializable {
         courseValidator.setStyle("-fx-text-fill: red");
         courseValidator.setText("Course Removed");
     }
+
+    @FXML
+    void removeClassroom(ActionEvent event) {
+
+    }
+
+    @FXML
+    void addLecture(ActionEvent event) {
+
+    }
+
+
+    @FXML
+    void removeLecture(ActionEvent event) {
+
+    }
+
 
     @FXML
     void addTeacher(ActionEvent event) {
@@ -163,6 +259,13 @@ public class AdminController implements Initializable {
             Vector<Teacher> teachers = Application.getTeachers();
             for(Teacher t : teachers) {
                 showTeachers.getItems().addAll(t.getName());
+            }
+        }
+        if(showClassrooms != null) {
+            showClassrooms.getItems().clear();
+            Vector<Classroom> classrooms = Application.getClassrooms();
+            for(Classroom c : classrooms) {
+                showClassrooms.getItems().addAll(c.classroomId + " | " + c.type);
             }
         }
     }

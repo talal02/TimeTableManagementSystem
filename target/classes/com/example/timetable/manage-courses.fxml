@@ -53,7 +53,7 @@
                </font>
             </TextField>
             <ChoiceBox fx:id="showCourses" layoutX="100.0" layoutY="279.0" prefHeight="27.0" prefWidth="295.0" />
-            <Label fx:id="courseValidator" alignment="CENTER" layoutX="123.0" layoutY="391.0" prefHeight="17.0" prefWidth="343.0">
+            <Label fx:id="courseValidator" alignment="CENTER" layoutX="123.0" layoutY="391.0" prefHeight="17.0" prefWidth="343.0" style="-fx-background-radius: 30;">
                <font>
                   <Font name="Bell MT" size="16.0" />
                </font>

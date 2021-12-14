@@ -14,13 +14,14 @@ public class Application extends javafx.application.Application {
     private static Vector<Student> students;
     private static Vector<Course> courses;
     private static Vector<Teacher> teachers;
-
+    private static Vector<Classroom> classrooms;
 
     @Override
     public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
         s = stage;
         initialize();
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("admin-page.fxml"));
+        s.resizableProperty().asObject().setValue(false);
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login-page.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 773, 423);
         stage.setTitle("Time Table Management System!");
         stage.setScene(scene);
@@ -33,6 +34,7 @@ public class Application extends javafx.application.Application {
         students = db.getStudents();
         courses = db.getCourses();
         teachers = db.getTeachers();
+        classrooms = db.getClassrooms();
 
         for(Admin a : admins) {
             System.out.println(a.getEmail());
@@ -88,5 +90,13 @@ public class Application extends javafx.application.Application {
 
     public static void setTeachers(Vector<Teacher> teachers) {
         Application.teachers = teachers;
+    }
+
+    public static Vector<Classroom> getClassrooms() {
+        return classrooms;
+    }
+
+    public static void setClassrooms(Vector<Classroom> classrooms) {
+        Application.classrooms = classrooms;
     }
 }

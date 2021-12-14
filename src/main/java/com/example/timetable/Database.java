@@ -16,6 +16,25 @@ public class Database {
         }
     }
 
+    public Vector<Classroom> getClassrooms() {
+        Vector<Classroom> classrooms = new Vector<>();
+        try {
+            Statement st = connection.createStatement();
+            String sql = "SELECT * FROM CLASSROOM";
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                Classroom c = new Classroom();
+                c.setClassroomId(rs.getString("CLASSROOMID"));
+                c.setType(rs.getString("TYPE"));
+                c.setVacant(rs.getInt("VACANCY"));
+                classrooms.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classrooms;
+    }
+
     public Vector<Admin> getAdmins() {
         Vector<Admin> admins = new Vector<>();
         try {
@@ -54,7 +73,7 @@ public class Database {
                     Course c = new Course();
                     c.setCourseId(rs.getString("COURSEID"));
                     c.setCourseName(rs.getString("COURSENAME"));
-                    c.setCreditHrs(Integer.parseInt(rs.getString("CREDITHRS")));
+                    c.setCreditHrs(rs.getInt("CREDITHRS"));
                     c.getSections().add(rs.getString("SECTION"));
                     courses.add(c);
                 }
@@ -148,6 +167,23 @@ public class Database {
         return false;
     }
 
+    public boolean addClassroom(String classroomId, String Type, int vacant) {
+        try {
+            Statement st = connection.createStatement();
+            Classroom c = new Classroom();
+            c.setVacant(vacant);
+            c.setClassroomId(classroomId);
+            c.setType(Type);
+            String sql = "INSERT INTO CLASSROOM VALUES ('"+ classroomId +"', '"+ Type +"', "+ vacant+")";
+            st.executeUpdate(sql);
+            Application.getClassrooms().add(c);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean addCourse(String cid, String cName, int credit, String sections) {
         String[] section = sections.split(",");
         try {
@@ -231,8 +267,5 @@ public class Database {
         }
         return false;
     }
-
-
-
 
 }
