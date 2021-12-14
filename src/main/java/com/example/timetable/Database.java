@@ -205,6 +205,43 @@ public class Database {
         return false;
     }
 
+    public boolean removeCourse(String cid) {
+        try {
+            Statement st = connection.createStatement();
+            String sql = "DELETE FROM COURSE WHERE COURSEID = '"+ cid +"'";
+            st.executeUpdate(sql);
+            Application.getCourses().remove(Integer.parseInt(cid));
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean removeClassroom(String cid) {
+        try {
+            Statement st = connection.createStatement();
+            String sql = "DELETE FROM CLASSROOM WHERE CLASSROOMID = '"+ cid +"'";
+            st.executeUpdate(sql);
+            Application.getClassrooms().remove(Integer.parseInt(cid));
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean removeTeacher(String tid) {
+        try {
+            Statement st = connection.createStatement();
+            String sql = "DELETE FROM TEACHER WHERE TEACHERID = '"+tid+"'";
+            st.executeUpdate(sql);
+            Application.getTeachers().remove(Integer.parseInt(tid));
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean addTeacher(String tid, String name, String email, String pss, String cid, String section) {
         Vector<Teacher> teachers = Application.getTeachers();
         try {

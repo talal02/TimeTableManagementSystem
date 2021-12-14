@@ -23,7 +23,7 @@ public class Application extends javafx.application.Application {
         s.resizableProperty().asObject().setValue(false);
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login-page.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 773, 423);
-        stage.setTitle("Time Table Management System!");
+        stage.setTitle("TimeTable Management System!");
         stage.setScene(scene);
         stage.show();
     }
