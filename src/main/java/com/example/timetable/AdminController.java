@@ -289,13 +289,50 @@ public class AdminController implements Initializable {
 
     @FXML
     void removeCourse(ActionEvent event) {
-        courseValidator.setStyle("-fx-text-fill: red");
-        courseValidator.setText("Course Removed");
+        if(!Objects.equals(showCourses.getValue(), "")) {
+            Vector<Course> courses = Application.getCourses();
+            String id = "";
+            for (int i = 0; i < courses.size(); i++) {
+                if (Objects.equals(courses.get(i).courseId, cId.getText())) {
+                    id = courses.get(i).courseId;
+                }
+            }
+            if (db.removeCourse(id)) {
+                teacherValidator.setStyle("-fx-text-fill: red");
+                teacherValidator.setText("Course Removed");
+                initialize(null,null);
+            } else {
+                teacherValidator.setStyle("-fx-text-fill: red");
+                teacherValidator.setText("Course Removal Failed...");
+            }
+        } else {
+            teacherValidator.setStyle("-fx-text-fill: red");
+            teacherValidator.setText("No Course selected...");
+        }
     }
 
     @FXML
     void removeClassroom(ActionEvent event) {
-
+        if(!Objects.equals(showClassrooms.getValue(), "")) {
+            Vector<Classroom> classrooms = Application.getClassrooms();
+            String id = "";
+            for (int i = 0; i < classrooms.size(); i++) {
+                if (Objects.equals(classrooms.get(i).toString(), showClassrooms.getValue())) {
+                    id = classrooms.get(i).classroomId;
+                }
+            }
+            if (db.removeClassroom(String.valueOf(id))) {
+                teacherValidator.setStyle("-fx-text-fill: red");
+                teacherValidator.setText("Classroom Removed");
+                initialize(null,null);
+            } else {
+                teacherValidator.setStyle("-fx-text-fill: red");
+                teacherValidator.setText("Classroom Removal Failed...");
+            }
+        } else {
+            teacherValidator.setStyle("-fx-text-fill: red");
+            teacherValidator.setText("No Classroom selected...");
+        }
     }
 
     @FXML
@@ -373,7 +410,26 @@ public class AdminController implements Initializable {
 
     @FXML
     void removeTeacher(ActionEvent event) {
-
+        if(!Objects.equals(showTeachers.getValue(), "")) {
+            Vector<Teacher> teachers = Application.getTeachers();
+            int id = 0;
+            for (int i = 0; i < teachers.size(); i++) {
+                if (Objects.equals(teachers.get(i).email, tEmail.getText())) {
+                    id = i;
+                }
+            }
+            if (db.removeTeacher(String.valueOf(id))) {
+                teacherValidator.setStyle("-fx-text-fill: red");
+                teacherValidator.setText("Teacher Removed");
+                initialize(null,null);
+            } else {
+                teacherValidator.setStyle("-fx-text-fill: red");
+                teacherValidator.setText("Teacher Removal Failed...");
+            }
+        } else {
+            teacherValidator.setStyle("-fx-text-fill: red");
+            teacherValidator.setText("No Teacher selected...");
+        }
     }
 
     private void initialize_slots(Vector<String> nv_slots) {
