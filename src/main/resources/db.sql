@@ -22,7 +22,7 @@ CREATE TABLE QUIZ (
                       courseid varchar2(10),
                       section varchar2(10),
                       constraint fk_course FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
-                      constraint quiz_pk PRIMARY KEY (quizid, courseid)
+                      constraint quiz_pk PRIMARY KEY (quizid, courseid, section)
 );
 
 CREATE TABLE CLASSROOM (
@@ -46,9 +46,10 @@ CREATE TABLE LECTURE (
                          courseid varchar2(10),
                          day varchar2(10),
                          slot varchar2(50),
+                         section varchar2(10),
                          constraint lecture_pk PRIMARY KEY (lectureid),
                          constraint fk_classrooom FOREIGN KEY (classroomid) REFERENCES CLASSROOM(classroomid),
-                         constraint fk_quiz FOREIGN KEY (quizid, courseid) REFERENCES QUIZ(quizid, courseid),
+                         constraint fk_quiz FOREIGN KEY (quizid, courseid, section) REFERENCES QUIZ(quizid, courseid, section),
                          constraint fk_slot FOREIGN KEY (slot) REFERENCES SLOT(slot)
 );
 
@@ -81,5 +82,10 @@ CREATE TABLE STUDENT (
                          constraint fk_course_student FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
                          constraint studentid_pk PRIMARY KEY (studentid)
 );
+
+INSERT INTO SLOT VALUES ('8:30 - 9:50', 'Class');
+INSERT INTO SLOT VALUES ('10:00 - 11:20', 'Class');
+INSERT INTO SLOT VALUES ('11:30 - 12:50', 'Class');
+INSERT INTO SLOT VALUES ('8:30 - 11:15', 'Lab');
 
 commit;
