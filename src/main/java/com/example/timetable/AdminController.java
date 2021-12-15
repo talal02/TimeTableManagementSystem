@@ -1,21 +1,120 @@
 package com.example.timetable;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
 public class AdminController implements Initializable {
+
+    @FXML
+    private SVGPath next;
+
+    @FXML
+    private SVGPath prev;
+
+    @FXML
+    private Text dayLabel;
+
+    @FXML
+    private TableView<Classroom> t1;
+
+    @FXML
+    private TableView<Classroom> t01;
+
+    @FXML
+    private TableView<Lecture> t2;
+
+    @FXML
+    private TableView<Lecture> t3;
+
+    @FXML
+    private TableView<Lecture> t4;
+
+    @FXML
+    private TableView<Lecture> t5;
+
+    @FXML
+    private TableView<Lecture> t02;
+
+    @FXML
+    private TableView<Lecture> t03;
+
+    @FXML
+    private TableView<Lecture> t04;
+
+    @FXML
+    private TableView<Lecture> t05;
+
+    @FXML
+    private TableView<Lecture> t6;
+
+    @FXML
+    private TableView<Lecture> t7;
+
+    @FXML
+    private TableView<Lecture> t8;
+
+    @FXML
+    private TableView<Lecture> t9;
+
+    @FXML
+    private TableView<Lecture> labTable;
+
+    @FXML
+    private TableColumn<Classroom, String> classrooms;
+
+    @FXML
+    private TableColumn<Classroom, String> labs;
+
+    @FXML
+    private TableColumn<Lecture, String> slot01;
+
+    @FXML
+    private TableColumn<Lecture, String> slot02;
+
+    @FXML
+    private TableColumn<Lecture, String> slot03;
+
+    @FXML
+    private TableColumn<Lecture, String> slot04;
+
+    @FXML
+    private TableColumn<Lecture, String> slot1;
+
+    @FXML
+    private TableColumn<Lecture, String> slot2;
+
+    @FXML
+    private TableColumn<Lecture, String> slot3;
+
+    @FXML
+    private TableColumn<Lecture, String> slot4;
+
+    @FXML
+    private TableColumn<Lecture, String> slot5;
+
+    @FXML
+    private TableColumn<Lecture, String> slot6;
+
+    @FXML
+    private TableColumn<Lecture, String> slot7;
+
+    @FXML
+    private TableColumn<Lecture, String> slot8;
 
     @FXML
     private TextField cId;
@@ -98,13 +197,30 @@ public class AdminController implements Initializable {
     void classPressed(ActionEvent event) {
         if(isClass.selectedProperty().asObject().getValue()) {
             isLab.selectedProperty().asObject().setValue(false);
+            initialize(null, null);
         }
+    }
+
+    @FXML
+    void changeDay(MouseEvent event) {
+        String mouseOn = event.getSource().toString();
+        if(mouseOn.contains("next")) {
+            option += 1;
+            option = option%5;
+        } else if(mouseOn.contains("prev")) {
+            option -= 1;
+            if(option < 0) {
+                option = 4;
+            }
+        }
+        initialize(null, null);
     }
 
     @FXML
     void labPressed(ActionEvent event) {
         if(isLab.selectedProperty().asObject().getValue()) {
             isClass.selectedProperty().asObject().setValue(false);
+            initialize(null, null);
         }
     }
 
@@ -120,15 +236,17 @@ public class AdminController implements Initializable {
                 }
             }
             if(isClass.selectedProperty().asObject().getValue()) {
-                db.addClassroom(classroomId.getText(), "Class", 1);
-                classroomValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
-                classroomValidator.setText("Classroom Added...");
-                initialize(null, null);
+                if(db.addClassroom(classroomId.getText(), "Class", 1)) {
+                    classroomValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
+                    classroomValidator.setText("Classroom Added...");
+                    initialize(null, null);
+                }
             } else if(isLab.selectedProperty().asObject().getValue()) {
-                db.addClassroom(classroomId.getText(), "Lab", 1);
-                classroomValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
-                classroomValidator.setText("Lab Added...");
-                initialize(null, null);
+                if(db.addClassroom(classroomId.getText(), "Lab", 1)){
+                    classroomValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
+                    classroomValidator.setText("Lab Added...");
+                    initialize(null, null);
+                }
             } else {
                 classroomValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
                 classroomValidator.setText("Kindly Select Lab or Class...");
@@ -183,6 +301,39 @@ public class AdminController implements Initializable {
     @FXML
     void addLecture(ActionEvent event) {
 
+        if(!Objects.equals(showDays.getValue(), "") && !Objects.equals(showSlots.getValue(), "") && !Objects.equals(showClassrooms.getValue(), "") && !Objects.equals(tCourse.getValue(), "") && !Objects.equals(tSection.getValue(), "")) {
+            if(isLab.selectedProperty().asObject().getValue() || isClass.selectedProperty().asObject().getValue()) {
+                Vector<Lecture> lectures = Application.getLectures();
+                int id = 0;
+                for(Lecture l : lectures) {
+                    if(Objects.equals(l.getClassroomId(), showClassrooms.getValue()) && Objects.equals(l.getDay(), showDays.getValue()) && Objects.equals(l.getSlot(), showSlots.getValue())) {
+                        timetableValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                        timetableValidator.setText("Slot isn't empty...");
+                        return;
+                    }
+                    if(Integer.parseInt(l.getLectureId()) > id) {
+                        id = Integer.parseInt(l.getLectureId());
+                    }
+                }
+                if(lectures.size() == 0 || lectures.size() == 1){
+                    id = lectures.size();
+                } else {
+                    id += 1;
+                }
+                if(db.addLecture(""+id, showDays.getValue(), showSlots.getValue(), showClassrooms.getValue(), tSection.getValue(), tCourse.getValue())) {
+                initialize(null, null);
+                showSlots.getItems().clear();
+                timetableValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
+                timetableValidator.setText("Lecture Added...");
+                }
+            } else {
+                timetableValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                timetableValidator.setText("Select Class or Lab...");
+            }
+        } else {
+            timetableValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+            timetableValidator.setText("Input Fields Can't be Empty...");
+        }
     }
 
 
@@ -225,6 +376,58 @@ public class AdminController implements Initializable {
 
     }
 
+    private void initialize_slots(Vector<String> nv_slots) {
+        if(showSlots != null) {
+            if (isLab.selectedProperty().asObject().getValue() || isClass.selectedProperty().asObject().getValue()) {
+                if(showClassrooms.getValue() == null || showDays.getValue() == null) {
+                    timetableValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                    timetableValidator.setText("Select Classroom & Day First...");
+                } else {
+                    showSlots.getItems().clear();
+                    showSlots1.getItems().clear();
+                    Vector<String> slots = db.getSlots(isClass.selectedProperty().asObject().getValue() ? "Class" : "Lab");
+                    for(String s : slots) {
+                        if(nv_slots.contains(s)) {
+                            showSlots1.getItems().addAll(s);
+                            continue;
+                        }
+                        showSlots.getItems().addAll(s);
+                        showSlots1.getItems().addAll(s);
+                    }
+                }
+            } else {
+                timetableValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                timetableValidator.setText("Select Class or Lab...");
+            }
+        }
+    }
+
+    private void initialize_classrooms() {
+        showClassrooms.getItems().clear();
+        Vector<Classroom> classrooms = Application.getClassrooms();
+        if (showDays != null) {
+            for (Classroom c : classrooms) {
+                if (isLab.selectedProperty().asObject().getValue() && Objects.equals(c.type, "Lab")) {
+                    showClassrooms.getItems().addAll(c.classroomId);
+                } else if (isClass.selectedProperty().asObject().getValue() && Objects.equals(c.type, "Class")) {
+                    showClassrooms.getItems().addAll(c.classroomId);
+                }
+            }
+            showClassrooms.valueProperty().addListener((ov, t, t1) -> {
+                if (!Objects.equals(t1, "")) {
+                    Vector<Lecture> lectures = Application.getLectures();
+                    Vector<String> nv_slots = new Vector<>();
+                    for (Lecture l : lectures) {
+                        if (Objects.equals(l.getClassroomId(), showClassrooms.getValue()) && Objects.equals(l.getDay(), showDays.getValue())) {
+                            nv_slots.add(l.getSlot());
+                        }
+                    }
+                    initialize_slots(nv_slots);
+                }
+            });
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Vector<Course> courses = Application.getCourses();
@@ -242,7 +445,6 @@ public class AdminController implements Initializable {
             }
             tCourse.valueProperty().addListener((ov, t, t1) -> {
                 if(!Objects.equals(t1, "")) {
-                    option = 1;
                     tSection.disableProperty().asObject().setValue(false);
                     tSection.getItems().clear();
                     for(int i = 0; i < courses.size(); i++) {
@@ -264,8 +466,167 @@ public class AdminController implements Initializable {
         if(showClassrooms != null) {
             showClassrooms.getItems().clear();
             Vector<Classroom> classrooms = Application.getClassrooms();
+            if (showDays == null) {
+                for(Classroom c : classrooms) {
+                    showClassrooms.getItems().addAll(c.classroomId + " | " + c.type);
+                }
+            }
+        }
+        if(showDays != null) {
+            showDays.getItems().clear();
+            showDays1.getItems().clear();
+            String[] days = {"Monday", "Tuesday", "Webnesday", "Thursday", "Friday"};
+            for(String s : days) {
+                showDays1.getItems().addAll(s);
+                showDays.getItems().addAll(s);
+            }
+            showDays.valueProperty().addListener((ov, t, t1) -> {
+                if(!Objects.equals(t1, "")) {
+                    initialize_classrooms();
+                }
+            });
+        }
+        if(t1 != null) {
+            classrooms.setCellValueFactory(new PropertyValueFactory<>("classroomId"));
+            labs.setCellValueFactory(new PropertyValueFactory<>("classroomId"));
+            slot1.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot2.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot3.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot4.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot5.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot6.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot7.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot8.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot01.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot02.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot03.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            slot04.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+            Vector<Classroom> classrooms = Application.getClassrooms();
+            t1.getItems().clear();
+            t01.getItems().clear();
+            t2.getItems().clear();
+            t3.getItems().clear();
+            t4.getItems().clear();
+            t5.getItems().clear();
+            t6.getItems().clear();
+            t7.getItems().clear();
+            t8.getItems().clear();
+            t9.getItems().clear();
+            t02.getItems().clear();
+            t03.getItems().clear();
+            t04.getItems().clear();
+            t05.getItems().clear();
             for(Classroom c : classrooms) {
-                showClassrooms.getItems().addAll(c.classroomId + " | " + c.type);
+                if(Objects.equals(c.getType(), "Class")) {
+                    t1.getItems().add(c);
+                } else {
+                    t01.getItems().add(c);
+                }
+            }
+            dayLabel.setText(option == 0 ? "Monday" : option == 1 ? "Tuesday" : option == 2 ? "Wednesday" : option == 3 ? "Thursday" : "Friday");
+            setTable(dayLabel.getText());
+        }
+    }
+    private void setTable(String present_day) {
+        ObservableList<Classroom> table1 = t1.getItems();
+        Vector<Lecture> lectures = db.getLectures();
+        Vector<String> slots_name = db.getSlots("Class");
+        boolean[] slots_found = new boolean[8];
+        for(Classroom c : table1) {
+            Arrays.fill(slots_found, false);
+            Lecture found = null;
+            for(Lecture l : lectures) {
+                if(Objects.equals(l.getClassroomId(), c.getClassroomId()) && Objects.equals(l.getDay(), present_day)) {
+                    int idx = slots_name.indexOf(l.getSlot());
+                    slots_found[idx] = true;
+                    found = l;
+                }
+            }
+            if(!slots_found[0]) {
+                t2.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t2.getItems().add(found);
+            }
+            if(!slots_found[1]) {
+                t3.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t3.getItems().add(found);
+            }
+            if(!slots_found[2]) {
+                t4.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t4.getItems().add(found);
+            }
+            if(!slots_found[3]) {
+                t5.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t5.getItems().add(found);
+            }
+            if(!slots_found[4]) {
+                t6.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t6.getItems().add(found);
+            }
+            if(!slots_found[5]) {
+                t7.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t7.getItems().add(found);
+            }
+            if(!slots_found[6]) {
+                t8.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t8.getItems().add(found);
+            }
+            if(!slots_found[7]) {
+                t9.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + " | " + found.getSection());
+                t9.getItems().add(found);
+            }
+        }
+        table1 = t01.getItems();
+        slots_name = db.getSlots("Lab");
+        slots_found = new boolean[4];
+        for(Classroom c : table1) {
+            Arrays.fill(slots_found, false);
+            Lecture found = null;
+            for(Lecture l : lectures) {
+                if(Objects.equals(l.getClassroomId(), c.getClassroomId()) && Objects.equals(l.getDay(), present_day)) {
+                    int idx = slots_name.indexOf(l.getSlot());
+                    slots_found[idx] = true;
+                    found = l;
+                }
+            }
+            if(!slots_found[0]) {
+                t02.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
+                t02.getItems().add(found);
+            }
+            if(!slots_found[1]) {
+                t03.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
+                t03.getItems().add(found);
+            }
+            if(!slots_found[2]) {
+                t04.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
+                t04.getItems().add(found);
+            }
+            if(!slots_found[3]) {
+                t05.getItems().add(new Lecture());
+            } else {
+                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
+                t05.getItems().add(found);
             }
         }
     }
