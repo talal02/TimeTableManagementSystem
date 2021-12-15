@@ -15,15 +15,18 @@ public class Application extends javafx.application.Application {
     private static Vector<Course> courses;
     private static Vector<Teacher> teachers;
     private static Vector<Classroom> classrooms;
+    private static Vector<Lecture> lectures;
 
     @Override
     public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
         s = stage;
         initialize();
         s.resizableProperty().asObject().setValue(false);
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login-page.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("admin-page.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 773, 423);
-        stage.setTitle("TimeTable Management System!");
+//        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("timetable.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        stage.setTitle("Time Table Management System!");
         stage.setScene(scene);
         stage.show();
     }
@@ -35,6 +38,7 @@ public class Application extends javafx.application.Application {
         courses = db.getCourses();
         teachers = db.getTeachers();
         classrooms = db.getClassrooms();
+        lectures = db.getLectures();
 
         for(Admin a : admins) {
             System.out.println(a.getEmail());
@@ -46,6 +50,10 @@ public class Application extends javafx.application.Application {
 
         for(Course c: courses) {
             System.out.println(c.getCourseId());
+        }
+
+        for(Lecture l: lectures) {
+            System.out.println(l.getCourseId());
         }
     }
 
@@ -98,5 +106,13 @@ public class Application extends javafx.application.Application {
 
     public static void setClassrooms(Vector<Classroom> classrooms) {
         Application.classrooms = classrooms;
+    }
+
+    public static Vector<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public static void setLectures(Vector<Lecture> lectures) {
+        Application.lectures = lectures;
     }
 }

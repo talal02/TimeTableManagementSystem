@@ -16,6 +16,44 @@ public class Database {
         }
     }
 
+    public Vector<String> getSlots(String type) {
+        Vector<String> slots = new Vector<>();
+        try {
+            Statement st = connection.createStatement();
+            String sql = "SELECT * FROM SLOT where type='" + type +"'";
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                slots.add(rs.getString("SLOT"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return slots;
+    }
+
+    public Vector<Lecture> getLectures() {
+        Vector<Lecture> lectures = new Vector<>();
+        try {
+            Statement st = connection.createStatement();
+            String sql = "SELECT * FROM LECTURE ORDER BY CLASSROOMID";
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                Lecture l = new Lecture();
+                l.setCourseId(rs.getString("COURSEID"));
+                l.setSection(rs.getString("SECTION"));
+                l.setDay(rs.getString("DAY"));
+                l.setLectureId(rs.getString("LECTUREID"));
+                l.setClassroomId(rs.getString("CLASSROOMID"));
+                l.setSlot(rs.getString("SLOT"));
+                l.setQuizId(rs.getInt("QUIZID"));
+                lectures.add(l);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lectures;
+    }
+
     public Vector<Classroom> getClassrooms() {
         Vector<Classroom> classrooms = new Vector<>();
         try {
@@ -163,6 +201,26 @@ public class Database {
             if(Objects.equals(a.getEmail(), Email) && Objects.equals(a.getPss(), Pss)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean addLecture(String LectureId, String Day, String Slot, String ClassroomId, String Section, String CourseId) {
+        try {
+            Statement st = connection.createStatement();
+            Lecture l = new Lecture();
+            l.setLectureId(LectureId);
+            l.setSection(Section);
+            l.setCourseId(CourseId);
+            l.setDay(Day);
+            l.setSlot(Slot);
+            l.setClassroomId(ClassroomId);
+            String sql = "INSERT INTO LECTURE (LECTUREID, DAY, SLOT, COURSEID, SECTION, CLASSROOMID) VALUES ('"+ LectureId +"', '"+ Day +"', '"+ Slot +"', '"+ CourseId +"', '"+ Section+"', '"+ ClassroomId + "')";
+            st.executeUpdate(sql);
+            Application.getLectures().add(l);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
