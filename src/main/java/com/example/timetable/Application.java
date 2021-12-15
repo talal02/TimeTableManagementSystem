@@ -22,8 +22,10 @@ public class Application extends javafx.application.Application {
         s = stage;
         initialize();
         s.resizableProperty().asObject().setValue(false);
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("timetable.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("admin-page.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 773, 423);
+//        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("timetable.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         stage.setTitle("Time Table Management System!");
         stage.setScene(scene);
         stage.show();
