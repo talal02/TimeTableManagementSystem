@@ -346,16 +346,30 @@ public class Database {
         return false;
     }
 
-    public boolean addStudent(String Email, String Pss, String id) {
+    public boolean addStudent(String Email, String Pss, String id, String Course, String Section, String Name) {
         try {
+            boolean found = false;
+            Vector<Student> students = Application.getStudents();
+            for(Student s : students) {
+                if(Objects.equals(s.getEmail(), Email)) {
+                    s.getCourseId().add(Course);
+                    found = true;
+                    break;
+                }
+            }
             Statement st = connection.createStatement();
-            String sql = "INSERT INTO STUDENT (EMAIL, PSS, STUDENTID) VALUES ('"+ Email +"', '"+ Pss +"', '"+ id +"')";
+            String sql = "INSERT INTO STUDENT VALUES ('"+ Name +"', '"+ Email +"', '"+ id +"', '"+ Pss +"', '"+ Course +"', '"+ Section +"')";
             st.executeUpdate(sql);
-            Student s = new Student();
-            s.setPss(Pss);
-            s.setEmail(Email);
-            s.setId(id);
-            Application.getStudents().add(s);
+            if(!found) {
+                Student s = new Student();
+                s.setPss(Pss);
+                s.setName(Name);
+                s.getCourseId().add(Course);
+                s.setSection(Section);
+                s.setEmail(Email);
+                s.setId(id);
+                Application.getStudents().add(s);
+            }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

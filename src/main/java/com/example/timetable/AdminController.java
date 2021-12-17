@@ -21,6 +21,30 @@ import java.util.Vector;
 public class AdminController implements Initializable {
 
     @FXML
+    private TextField sCourses;
+
+    @FXML
+    private TextField sEmail;
+
+    @FXML
+    private TextField sName;
+
+    @FXML
+    private TextField sPss;
+
+    @FXML
+    private TextField sSection;
+
+    @FXML
+    private TextField selectSection;
+
+    @FXML
+    private ChoiceBox<String> showStudents;
+
+    @FXML
+    private Label studentValidator;
+
+    @FXML
     private SVGPath next;
 
     @FXML
@@ -284,7 +308,7 @@ public class AdminController implements Initializable {
 
     @FXML
     void backAdmin(ActionEvent event) throws IOException {
-        Application.changeScene("admin-page.fxml", "Admin Panel", 773, 423);
+        Application.changeScene("admin-page.fxml", "Admin Panel", 900, 540);
     }
 
     @FXML
@@ -292,9 +316,9 @@ public class AdminController implements Initializable {
         if(!Objects.equals(showCourses.getValue(), "")) {
             Vector<Course> courses = Application.getCourses();
             String id = "";
-            for (int i = 0; i < courses.size(); i++) {
-                if (Objects.equals(courses.get(i).courseId, cId.getText())) {
-                    id = courses.get(i).courseId;
+            for (Course cours : courses) {
+                if (Objects.equals(cours.courseId, cId.getText())) {
+                    id = cours.courseId;
                 }
             }
             if (db.removeCourse(id)) {
@@ -316,9 +340,9 @@ public class AdminController implements Initializable {
         if(!Objects.equals(showClassrooms.getValue(), "")) {
             Vector<Classroom> classrooms = Application.getClassrooms();
             String id = "";
-            for (int i = 0; i < classrooms.size(); i++) {
-                if (Objects.equals(classrooms.get(i).toString(), showClassrooms.getValue())) {
-                    id = classrooms.get(i).classroomId;
+            for (Classroom classroom : classrooms) {
+                if (Objects.equals(classroom.toString(), showClassrooms.getValue())) {
+                    id = classroom.classroomId;
                 }
             }
             if (db.removeClassroom(String.valueOf(id))) {
@@ -542,6 +566,17 @@ public class AdminController implements Initializable {
                 }
             });
         }
+        if(showStudents != null) {
+            showStudents.getItems().clear();
+            if(!Objects.equals(selectSection.getText(), "")) {
+                Vector<Course> st_courses = Application.getCourses();
+                for(Course c : st_courses) {
+                    if(c.getSections().contains(selectSection.getText())) {
+                        showStudents.getItems().add(c.getCourseId() + " | " + c.getCourseName());
+                    }
+                }
+            }
+        }
         if(t1 != null) {
             classrooms.setCellValueFactory(new PropertyValueFactory<>("classroomId"));
             labs.setCellValueFactory(new PropertyValueFactory<>("classroomId"));
@@ -596,54 +631,54 @@ public class AdminController implements Initializable {
                     int idx = slots_name.indexOf(l.getSlot());
                     slots_found[idx] = true;
                     found = l;
+                    Vector<Course> courses = Application.getCourses();
+                    for(Course cc : courses) {
+                        if(Objects.equals(cc.getCourseId(), l.getCourseId())) {
+                            found.setCourseId(cc.getCourseName() + "   |   " + found.getSection());
+                            break;
+                        }
+                    }
+                    break;
                 }
             }
             if(!slots_found[0]) {
                 t2.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t2.getItems().add(found);
             }
             if(!slots_found[1]) {
                 t3.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t3.getItems().add(found);
             }
             if(!slots_found[2]) {
                 t4.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t4.getItems().add(found);
             }
             if(!slots_found[3]) {
                 t5.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t5.getItems().add(found);
             }
             if(!slots_found[4]) {
                 t6.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t6.getItems().add(found);
             }
             if(!slots_found[5]) {
                 t7.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t7.getItems().add(found);
             }
             if(!slots_found[6]) {
                 t8.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t8.getItems().add(found);
             }
             if(!slots_found[7]) {
                 t9.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + " | " + found.getSection());
                 t9.getItems().add(found);
             }
         }
@@ -658,32 +693,90 @@ public class AdminController implements Initializable {
                     int idx = slots_name.indexOf(l.getSlot());
                     slots_found[idx] = true;
                     found = l;
+                    Vector<Course> courses = Application.getCourses();
+                    for(Course cc : courses) {
+                        if(Objects.equals(cc.getCourseId(), l.getCourseId())) {
+                            found.setCourseId(cc.getCourseName() + "   |   " + found.getSection());
+                            break;
+                        }
+                    }
+                    break;
                 }
             }
             if(!slots_found[0]) {
                 t02.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
                 t02.getItems().add(found);
             }
             if(!slots_found[1]) {
                 t03.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
                 t03.getItems().add(found);
             }
             if(!slots_found[2]) {
                 t04.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
                 t04.getItems().add(found);
             }
             if(!slots_found[3]) {
                 t05.getItems().add(new Lecture());
             } else {
-                found.setCourseId(found.getCourseId() + "   |   " + found.getSection());
                 t05.getItems().add(found);
             }
+        }
+    }
+
+    @FXML
+    public void showCourse(ActionEvent actionEvent) {
+        if(!Objects.equals(selectSection.getText(), "")) {
+            initialize(null, null);
+        } else {
+            studentValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+            studentValidator.setText("Section field can't be empty....");
+        }
+    }
+
+    @FXML
+    public void addStudent(ActionEvent actionEvent) {
+        if(!Objects.equals(sCourses.getText(), "") && !Objects.equals(sEmail.getText(), "") && !Objects.equals(sPss.getText(), "") && !Objects.equals(sSection.getText(), "") && !Objects.equals(sName.getText(), "")) {
+            String[] split_courses = sCourses.getText().split(",");
+            Vector<Course> courses = Application.getCourses();
+            Vector<Student> students = Application.getStudents();
+            int id = 0;
+            for(Student s : students) {
+                if(Integer.parseInt(s.getId()) > id) {
+                    id = Integer.parseInt(s.getId());
+                }
+            }
+            if(students.size() == 0 || students.size() == 1) {
+                id = students.size();
+            } else {
+                id += 1;
+            }
+            for(String s : split_courses) {
+                boolean found = true;
+                for(Course c : courses) {
+                    if(Objects.equals(c.getCourseId(), s) && c.getSections().contains(sSection.getText())) {
+                        if(db.addStudent(sEmail.getText(), sPss.getText(), ""+id, s, sSection.getText(), sName.getText())) {
+                            studentValidator.setStyle("-fx-text-fill: green; -fx-background-color: white");
+                            studentValidator.setText("Student Added...!");
+                        } else {
+                            studentValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                            studentValidator.setText("Error, can't add");
+                        }
+                        found = false;
+                        break;
+                    }
+                }
+                if(found) {
+                    studentValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+                    studentValidator.setText("Course or Section doesn't Exists");
+                }
+            }
+
+        } else {
+            studentValidator.setStyle("-fx-text-fill: red; -fx-background-color: white");
+            studentValidator.setText("Input field can't be empty....");
         }
     }
 }

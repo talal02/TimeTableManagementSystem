@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
@@ -108,5 +109,8 @@
       </Text>
       <SVGPath fx:id="next" content="M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z" fill="#2d75e8" layoutX="805.0" layoutY="30.0" onMouseClicked="#changeDay" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="5.0" />
       <SVGPath fx:id="prev" content="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" fill="#2d75e8" layoutX="435.0" layoutY="30.0" onMouseClicked="#changeDay" stroke="WHITE" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="5.0" />
+       <Button layoutX="603.0" layoutY="670.0" mnemonicParsing="false" onAction="#backAdmin" text="BACK" />
+
    </children>
+
 </AnchorPane>

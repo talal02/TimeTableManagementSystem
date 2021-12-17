@@ -7,19 +7,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" stylesheets="@../../../styles/style.css" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="423.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="900.0" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.Controller">
    <children>
-      <ImageView fitHeight="582.0" fitWidth="282.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="540.0" fitWidth="417.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../imgs/background2.jpg" />
          </image>
       </ImageView>
-      <AnchorPane layoutX="282.0" prefHeight="423.0" prefWidth="492.0" style="-fx-background-color: #a2a2a2;">
+      <AnchorPane layoutX="360.0" prefHeight="540.0" prefWidth="541.0" style="-fx-background-color: #a2a2a2;">
          <children>
             <Button layoutX="191.0" layoutY="168.0" mnemonicParsing="false" onAction="#manageTeachers" text="TEACHERS" />
             <Button layoutX="195.0" layoutY="113.0" mnemonicParsing="false" onAction="#manageCourses" text="COURSES" />
             <Button layoutX="177.0" layoutY="273.0" mnemonicParsing="false" onAction="#manageClassrooms" text="CLASSROOMS" />
-            <Button layoutX="198.0" layoutY="352.0" mnemonicParsing="false" onAction="#logoutPressed" text="LOGOUT" />
+            <Button layoutX="201.0" layoutY="481.0" mnemonicParsing="false" onAction="#logoutPressed" text="LOGOUT" />
             <Text fill="WHITE" layoutX="70.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-alignment: center;" text="Admin Panel" wrappingWidth="352.9830722808838">
                <font>
                   <Font name="Bell MT" size="30.0" />
@@ -31,6 +31,8 @@
                </font>
             </Text>
             <Button layoutX="185.0" layoutY="219.0" mnemonicParsing="false" onAction="#manageTimeTable" text="TIME TABLE" />
+            <Button layoutX="164.0" layoutY="373.0" mnemonicParsing="false" onAction="#viewTimeTable" text="VIEW TIMETABLE" />
+            <Button layoutX="197.0" layoutY="325.0" mnemonicParsing="false" onAction="#manageStudents" text="STUDENT" />
          </children>
       </AnchorPane>
    </children>

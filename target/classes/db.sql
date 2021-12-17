@@ -22,7 +22,7 @@ CREATE TABLE QUIZ (
                       courseid varchar2(10),
                       section varchar2(10),
                       constraint fk_course FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
-                      constraint quiz_pk PRIMARY KEY (quizid, courseid)
+                      constraint quiz_pk PRIMARY KEY (quizid, courseid, section)
 );
 
 CREATE TABLE CLASSROOM (
@@ -46,9 +46,10 @@ CREATE TABLE LECTURE (
                          courseid varchar2(10),
                          day varchar2(10),
                          slot varchar2(50),
+                         section varchar2(10),
                          constraint lecture_pk PRIMARY KEY (lectureid),
                          constraint fk_classrooom FOREIGN KEY (classroomid) REFERENCES CLASSROOM(classroomid),
-                         constraint fk_quiz FOREIGN KEY (quizid, courseid) REFERENCES QUIZ(quizid, courseid),
+                         constraint fk_quiz FOREIGN KEY (quizid, courseid, section) REFERENCES QUIZ(quizid, courseid, section),
                          constraint fk_slot FOREIGN KEY (slot) REFERENCES SLOT(slot)
 );
 
@@ -71,6 +72,8 @@ CREATE TABLE TEACHER (
                          constraint teacherid_pk PRIMARY KEY (teacherid, courseid, section)
 );
 
+DROP TABLE STUDENT;
+
 CREATE TABLE STUDENT (
                          name varchar2(50),
                          email varchar2(50),
@@ -79,7 +82,10 @@ CREATE TABLE STUDENT (
                          courseid varchar2(10),
                          section varchar2(10),
                          constraint fk_course_student FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
-                         constraint studentid_pk PRIMARY KEY (studentid)
+                         constraint studentid_pk PRIMARY KEY (studentid, courseid, section)
 );
+
+INSERT INTO SLOT VALUES ('8:30 - 9:50', 'Class'), ('10:00 - 11:20', 'Class'), ('11:30 - 12:50', 'Class'), ('01:00 - 02:20', 'Class'), ('02:30 - 03:50', 'Class'), ('03:55 - 05:15', 'Class'), ('05:20 - 06:40', 'Class'), ('06:45 - 08:05', 'Class');
+INSERT INTO SLOT VALUES ('8:30 - 11:15', 'Lab'), ('11:25 - 02:10', 'Lab'), ('02:25 - 05:10', 'Class'), ('05:20 - 08:05', 'Class');
 
 commit;

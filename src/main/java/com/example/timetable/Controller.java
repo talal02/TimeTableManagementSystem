@@ -80,8 +80,13 @@ public class Controller {
     }
 
     @FXML
-    void viewTimeTable(ActionEvent event) {
+    void manageStudents(ActionEvent event) throws IOException {
+        Application.changeScene("manage-students.fxml", "Manage Students", 850, 470);
+    }
 
+    @FXML
+    void viewTimeTable(ActionEvent event) throws IOException {
+        Application.changeScene("timetable.fxml", "Time Table", 1280, 720);
     }
 
     @FXML
@@ -123,22 +128,8 @@ public class Controller {
             loginMsg.setText("Only Admins can add Teachers...");
         }
         if(isStudent.selectedProperty().asObject().getValue()) {
-            int id;
-            if(Application.getStudents().size() == 0) {
-                id = 0;
-            } else {
-                id = Integer.parseInt(Application.getStudents().get(Application.getStudents().size()-1).getId()) + 1;
-            }
-            if(db.loginStudent(email.getText(), password.getText())) {
-                loginMsg.setStyle("-fx-text-fill: red");
-                loginMsg.setText("Account Already Exists...");
-            } else if(db.addStudent(email.getText(), password.getText(), ""+id)) {
-                loginMsg.setStyle("-fx-text-fill: green");
-                loginMsg.setText("Student Account Created...");
-            } else {
-                loginMsg.setStyle("-fx-text-fill: red");
-                loginMsg.setText("Account Creation Unsuccessful...");
-            }
+            loginMsg.setStyle("-fx-text-fill: red");
+            loginMsg.setText("Only Admins can add Students...");
         }
     }
 
