@@ -490,7 +490,7 @@ public class DynamicController implements Initializable {
                         id = Integer.parseInt(l.getLectureId());
                     }
                 }
-                if(lectures.size() == 0 || lectures.size() == 1){
+                if(lectures.size() == 0 || (lectures.size() == 1 && id != 1)){
                     id = lectures.size();
                 } else {
                     id += 1;
