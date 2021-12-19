@@ -9,7 +9,7 @@ DROP TABLE COURSE;
 
 CREATE TABLE COURSE (
                         courseid varchar2(10),
-                        coursename varchar2(50),
+                        coursename varchar2(100),
                         credithrs number,
                         section varchar2(10),
                         constraint course_pk PRIMARY KEY (courseid, section)
@@ -33,7 +33,7 @@ CREATE TABLE CLASSROOM (
 
 
 CREATE TABLE SLOT (
-                      slot varchar2(50),
+                      slot varchar2(100),
                       type varchar2(10),
                       constraint slot_pk PRIMARY KEY (slot)
 );
@@ -44,7 +44,7 @@ CREATE TABLE LECTURE (
                          quizid number,
                          courseid varchar2(10),
                          day varchar2(10),
-                         slot varchar2(50),
+                         slot varchar2(100),
                          section varchar2(10),
                          constraint lecture_pk PRIMARY KEY (lectureid),
                          constraint fk_classrooom FOREIGN KEY (classroomid) REFERENCES CLASSROOM(classroomid),
@@ -53,39 +53,34 @@ CREATE TABLE LECTURE (
 );
 
 CREATE TABLE ADMIN (
-                       name varchar2(50),
-                       email varchar2(50),
+                       name varchar2(100),
+                       email varchar2(100),
                        adminid varchar2(10),
-                       pss varchar2(50),
+                       pss varchar2(100),
                        constraint adminid_pk PRIMARY KEY (adminid)
 );
 
 CREATE TABLE TEACHER (
-                         name varchar2(50),
-                         email varchar2(50),
+                         name varchar2(100),
+                         email varchar2(100),
                          teacherid varchar2(10),
-                         pss varchar2(50),
+                         pss varchar2(100),
                          courseid varchar2(10),
                          section varchar2(10),
                          constraint fk_course_teacher FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
                          constraint teacherid_pk PRIMARY KEY (teacherid, courseid, section)
 );
 
-DROP TABLE STUDENT;
-
 CREATE TABLE STUDENT (
-                         name varchar2(50),
-                         email varchar2(50),
+                         name varchar2(100),
+                         email varchar2(100),
                          studentid varchar2(10),
-                         pss varchar2(50),
+                         pss varchar2(100),
                          courseid varchar2(10),
                          section varchar2(10),
-                         notification varchar2(100),
+                         notification varchar2(150),
                          constraint fk_course_student FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
                          constraint studentid_pk PRIMARY KEY (studentid, courseid, section)
 );
-
-INSERT INTO SLOT VALUES ('8:30 - 9:50', 'Class'), ('10:00 - 11:20', 'Class'), ('11:30 - 12:50', 'Class'), ('01:00 - 02:20', 'Class'), ('02:30 - 03:50', 'Class'), ('03:55 - 05:15', 'Class'), ('05:20 - 06:40', 'Class'), ('06:45 - 08:05', 'Class');
-INSERT INTO SLOT VALUES ('8:30 - 11:15', 'Lab'), ('11:25 - 02:10', 'Lab'), ('02:25 - 05:10', 'Class'), ('05:20 - 08:05', 'Class');
 
 commit;
