@@ -785,17 +785,17 @@ public class DynamicController implements Initializable {
         if(qCourse != null) {
             qSection.disableProperty().asObject().setValue(true);
             qCourse.getItems().clear();
-            for(int i = 0; i < courses.size(); i++) {
-                if(Application.getCurrentTeacher().getCourses().contains(courses.get(i).getCourseId()))
-                    qCourse.getItems().addAll(courses.get(i).getCourseId());
+            Vector<String> coursee = Application.getCurrentTeacher().getCourses();
+            Vector<String> sections =Application.getCurrentTeacher().getSections();
+            for(int i = 0; i < coursee.size(); i++) {
+                qCourse.getItems().addAll(coursee.get(i));
             }
             qCourse.valueProperty().addListener((ov, t, t1) -> {
                 if(!Objects.equals(t1, "")) {
                     qSection.disableProperty().asObject().setValue(false);
                     qSection.getItems().clear();
-                    for(int i = 0; i < courses.size(); i++) {
-                        if(Objects.equals(courses.get(i).getCourseId(), qCourse.getValue())) {
-                            Vector<String> sections = courses.get(i).getSections();
+                    for(int i = 0; i < coursee.size(); i++) {
+                        if(Objects.equals(coursee.get(i), qCourse.getValue())) {
                             qSection.getItems().addAll(sections.get(i));
                         }
                     }
