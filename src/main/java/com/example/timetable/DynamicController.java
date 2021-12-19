@@ -598,6 +598,16 @@ public class DynamicController implements Initializable {
                 }
             }
             int id = 0;
+            for(Teacher t : teachers) {
+                if(Integer.parseInt(t.getTid()) > id) {
+                    id = Integer.parseInt(t.getTid());
+                }
+            }
+            if(teachers.size() == 0 || (teachers.size() == 1 && id != teachers.size())) {
+                id = teachers.size();
+            } else {
+                id += 1;
+            }
             if(Application.getTeachers().size() > 0) {
                 id = Application.getTeachers().size();
             }
@@ -1014,19 +1024,25 @@ public class DynamicController implements Initializable {
                         Student s = Application.getCurrentStudent();
                         if(s.getCourseId().contains(l.getCourseId()) && Objects.equals(s.getSection(), l.getSection())) {
                             idx = slots_name.indexOf(l.getSlot());
-                            slots_found[idx] = true;
-                            found = l;
+                            if(idx != -1) {
+                                slots_found[idx] = true;
+                                found = l;
+                            }
                         }
                     } else if(isAdmin != null) {
                         idx = slots_name.indexOf(l.getSlot());
-                        slots_found[idx] = true;
-                        found = l;
+                        if(idx != -1) {
+                            slots_found[idx] = true;
+                            found = l;
+                        }
                     } else if(isTeacher != null) {
                         Teacher t = Application.getCurrentTeacher();
                         if(t.getCourses().contains(l.getCourseId()) && t.getSections().contains(l.getSection())) {
                             idx = slots_name.indexOf(l.getSlot());
-                            slots_found[idx] = true;
-                            found = l;
+                            if(idx != -1) {
+                                slots_found[idx] = true;
+                                found = l;
+                            }
                         }
                     }
                     if(found != null) {
