@@ -41,22 +41,6 @@ public class Application extends javafx.application.Application {
         classrooms = db.getClassrooms();
         lectures = db.getLectures();
         quizzes = db.getQuizzes();
-
-//        for(Admin a : admins) {
-//            System.out.println(a.getEmail());
-//        }
-//
-//        for(Student s: students) {
-//            System.out.println(s.getEmail());
-//        }
-//
-//        for(Course c: courses) {
-//            System.out.println(c.getCourseId());
-//        }
-//
-//        for(Lecture l: lectures) {
-//            System.out.println(l.getCourseId());
-//        }
     }
 
     public static void main(String[] args) {
