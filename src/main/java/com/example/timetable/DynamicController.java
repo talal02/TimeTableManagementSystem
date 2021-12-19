@@ -251,6 +251,79 @@ public class DynamicController implements Initializable {
     }
 
     @FXML
+    private Label teacherClassValidator;
+
+    @FXML
+    private ChoiceBox<String> teacherCourse;
+
+    @FXML
+    private ChoiceBox<String> teacherDays;
+
+    @FXML
+    private ChoiceBox<String> teacherSection;
+
+    @FXML
+    private ChoiceBox<String> teacherSlots;
+
+    @FXML
+    private ChoiceBox<String> teacherClassroom;
+
+    private static int option2 = 0;
+    private static String teacherKaCourse = "";
+    private static String teacherKaSection = "";
+    private static String teacherKaClassType = "";
+    private static String IdOfLecture = "";
+
+    @FXML
+    void cancelClass(ActionEvent event) {
+        if(!Objects.equals(teacherSection.getValue(), "") && !Objects.equals(teacherCourse.getValue(), "")) {
+            option2 = 1;
+            teacherKaCourse = teacherCourse.getValue();
+            teacherKaSection = teacherSection.getValue();
+            Vector<Lecture> lectures = Application.getLectures();
+            for(Lecture l : lectures) {
+                if(Objects.equals(l.getCourseId(), teacherKaCourse) && Objects.equals(l.getSection(), teacherKaSection)) {
+                    db.removeLecture(l.getLectureId());
+                    IdOfLecture = l.getLectureId();
+                    teacherKaClassType = l.getSlot();
+                    teacherClassValidator.setStyle("-fx-text-fill: green");
+                    teacherClassValidator.setText("Class Canceled... You may reschedule it");
+                    initialize(null, null);
+                    return;
+                }
+                teacherClassValidator.setStyle("-fx-text-fill: red");
+                teacherClassValidator.setText("No Course/Section exists...");
+            }
+        } else {
+            teacherClassValidator.setStyle("-fx-text-fill: red");
+            teacherClassValidator.setText("No Course/Section selected...");
+        }
+    }
+
+    @FXML
+    void rescheduleClass(ActionEvent event) {
+        if(!Objects.equals(teacherSection.getValue(), "") && !Objects.equals(teacherCourse.getValue(), "")) {
+            option2 = 2;
+            if(db.addLecture(IdOfLecture, teacherDays.getValue(), teacherSlots.getValue(), teacherClassroom.getValue(), teacherKaSection, teacherKaCourse)) {
+                teacherClassValidator.setStyle("-fx-text-fill: green");
+                teacherClassValidator.setText("Class Rescheduled...");
+                Vector<Student> students = Application.getStudents();
+                for(Student s : students) {
+                    if(Objects.equals(s.getSection(), teacherKaSection) && s.getCourseId().contains(teacherKaCourse)) {
+                        s.setNotification("Class of " + teacherKaCourse + " has been rescheduled on " + teacherDays.getValue());
+                    }
+                }
+            } else {
+                teacherClassValidator.setStyle("-fx-text-fill: red");
+                teacherClassValidator.setText("There was an issue...");
+            }
+        } else {
+            teacherClassValidator.setStyle("-fx-text-fill: red");
+            teacherClassValidator.setText("No Day/Class/Slot selected...");
+        }
+    }
+
+    @FXML
     void classPressed(ActionEvent event) {
         if(isClass.selectedProperty().asObject().getValue()) {
             isLab.selectedProperty().asObject().setValue(false);
@@ -506,7 +579,9 @@ public class DynamicController implements Initializable {
 
     @FXML
     void backTeacher(ActionEvent event) throws IOException {
-        Application.changeScene("teacher-page.fxml", "Tacher Panel", 773, 423);
+        if(option2 == 0 || option2 == 2) {
+            Application.changeScene("teacher-page.fxml", "Teacher Panel", 773, 423);
+        }
     }
 
     @FXML
@@ -628,6 +703,68 @@ public class DynamicController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(option2 == 1) {
+            teacherDays.getItems().clear();
+            String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+            for(String s : days) {
+                teacherDays.getItems().addAll(s);
+            }
+            teacherDays.valueProperty().addListener((ov, t1, t2) -> {
+                if(!Objects.equals(t2, "")) {
+                    teacherClassroom.getItems().clear();
+                    Vector<Classroom> classrooms = Application.getClassrooms();
+                    for(Classroom c : classrooms) {
+                        teacherClassroom.getItems().add(c.getClassroomId());
+                    }
+                }
+            });
+            if(!Objects.equals(teacherClassroom.getValue(), "")) {
+                teacherClassroom.valueProperty().addListener((ov, t1, t2) -> {
+                    if(!Objects.equals(t2, "")){
+                        teacherSlots.getItems().clear();
+                        Vector<Lecture> lectures = Application.getLectures();
+                        Vector<String> nv_slots = new Vector<>();
+                        for(Lecture l : lectures) {
+                            if(Objects.equals(l.getClassroomId(), t2) && Objects.equals(l.getDay(), teacherDays.getValue())){
+                                nv_slots.add(l.getSlot());
+                            }
+                        }
+                        Vector<String> slots1 = db.getSlots("Class");
+                        if(slots1.contains(teacherKaClassType)) {
+                            for(String sl : slots1) {
+                                if(!nv_slots.contains(sl)){
+                                    teacherSlots.getItems().add(sl);
+                                }
+                            }
+                        } else {
+                            slots1 = db.getSlots("Lab");
+                            for(String sl : slots1) {
+                                if(!nv_slots.contains(sl)){
+                                    teacherSlots.getItems().add(sl);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        if(teacherCourse != null) {
+            Teacher t = Application.getCurrentTeacher();
+            teacherCourse.getItems().clear();
+            for(int i = 0; i < t.getCourses().size(); i++) {
+                teacherCourse.getItems().addAll(t.getCourses().get(i));
+            }
+            teacherCourse.valueProperty().addListener((ov, t1, t2) -> {
+                if(!Objects.equals(t2, "")) {
+                    teacherSection.getItems().clear();
+                    for(int i = 0; i < t.getCourses().size(); i++) {
+                        if(Objects.equals(t.getCourses().get(i), t2)) {
+                            teacherSection.getItems().add(t.getSections().get(i));
+                        }
+                    }
+                }
+            });
+        }
         Vector<Course> courses = Application.getCourses();
         if(showCourses != null) {
             showCourses.getItems().clear();

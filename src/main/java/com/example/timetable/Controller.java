@@ -105,8 +105,8 @@ public class Controller {
     }
 
     @FXML
-    void cancelClass(ActionEvent event) {
-
+    void cancelClass(ActionEvent event) throws IOException {
+        Application.changeScene("teacher-cancel-class.fxml", "Class Cancel & Reschedule", 1000, 640);
     }
 
     @FXML
