@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="-Infinity" prefWidth="-Infinity" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.AdminController">
+<AnchorPane prefHeight="-Infinity" prefWidth="-Infinity" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.DynamicController">
    <children>
          <ImageView fitHeight="582.0" fitWidth="282.0" pickOnBounds="true" preserveRatio="true">
             <image>

@@ -17,7 +17,6 @@ CREATE TABLE COURSE (
 
 CREATE TABLE QUIZ (
                       topic varchar2(100),
-                      taken number,
                       quizid number,
                       courseid varchar2(10),
                       section varchar2(10),
@@ -81,6 +80,7 @@ CREATE TABLE STUDENT (
                          pss varchar2(50),
                          courseid varchar2(10),
                          section varchar2(10),
+                         notification varchar2(100),
                          constraint fk_course_student FOREIGN KEY (courseid, section) REFERENCES COURSE(courseid, section),
                          constraint studentid_pk PRIMARY KEY (studentid, courseid, section)
 );

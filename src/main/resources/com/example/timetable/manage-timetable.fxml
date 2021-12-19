@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="640.0" prefWidth="1000.0" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.AdminController">
+<AnchorPane prefHeight="640.0" prefWidth="1000.0" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.DynamicController">
    <children>
       <ImageView fitHeight="640.0" fitWidth="444.0" pickOnBounds="true" preserveRatio="true">
          <image>

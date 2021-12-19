@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-public class AdminController implements Initializable {
+public class DynamicController implements Initializable {
 
     @FXML
     private TextField sCourses;
@@ -52,6 +52,30 @@ public class AdminController implements Initializable {
 
     @FXML
     private Text dayLabel;
+
+    @FXML
+    private Text isStudent;
+
+    @FXML
+    private Text isAdmin;
+
+    @FXML
+    private Text isTeacher;
+
+    @FXML
+    private Label quizValidator;
+
+    @FXML
+    private TableColumn<Course, String> sCourseName;
+
+    @FXML
+    private TableView<Course> sCourseView;
+
+    @FXML
+    private TableView<Quiz> sQuizTable;
+
+    @FXML
+    private TableColumn<Quiz, String> sQuizTopic;
 
     @FXML
     private TableView<Classroom> t1;
@@ -165,6 +189,9 @@ public class AdminController implements Initializable {
     private ChoiceBox<String> tCourse;
 
     @FXML
+    private ChoiceBox<String> qCourse;
+
+    @FXML
     private TextField tEmail;
 
     @FXML
@@ -175,6 +202,12 @@ public class AdminController implements Initializable {
 
     @FXML
     private ChoiceBox<String> tSection;
+
+    @FXML
+    private ChoiceBox<String> qSection;
+
+    @FXML
+    private TextArea qTopic;
 
     @FXML
     private ChoiceBox<String> showTeachers;
@@ -213,7 +246,7 @@ public class AdminController implements Initializable {
 
     private static int option = 0;
 
-    public AdminController() throws SQLException, ClassNotFoundException {
+    public DynamicController() throws SQLException, ClassNotFoundException {
         db = new Database();
     }
 
@@ -312,26 +345,32 @@ public class AdminController implements Initializable {
     }
 
     @FXML
+    void backStudent(ActionEvent event) throws IOException {
+        Application.changeScene("student-page.fxml", "Student Panel", 773, 423);
+    }
+
+    @FXML
     void removeCourse(ActionEvent event) {
         if(!Objects.equals(showCourses.getValue(), "")) {
             Vector<Course> courses = Application.getCourses();
-            String id = "";
             for (Course cours : courses) {
-                if (Objects.equals(cours.courseId, cId.getText())) {
-                    id = cours.courseId;
+                if (Objects.equals(cours.getCourseName(), showCourses.getValue())) {
+                    if(db.removeCourse(cours.getCourseId())) {
+                        courseValidator.setStyle("-fx-text-fill: green");
+                        courseValidator.setText("Course Removed");
+                        initialize(null,null);
+                    } else {
+                        courseValidator.setStyle("-fx-text-fill: red");
+                        courseValidator.setText("Course Removal Failed...");
+                    }
+                    return;
                 }
             }
-            if (db.removeCourse(id)) {
-                teacherValidator.setStyle("-fx-text-fill: red");
-                teacherValidator.setText("Course Removed");
-                initialize(null,null);
-            } else {
-                teacherValidator.setStyle("-fx-text-fill: red");
-                teacherValidator.setText("Course Removal Failed...");
-            }
+            courseValidator.setStyle("-fx-text-fill: red");
+            courseValidator.setText("Course doesn't exists...");
         } else {
-            teacherValidator.setStyle("-fx-text-fill: red");
-            teacherValidator.setText("No Course selected...");
+            courseValidator.setStyle("-fx-text-fill: red");
+            courseValidator.setText("No Course selected...");
         }
     }
 
@@ -339,29 +378,31 @@ public class AdminController implements Initializable {
     void removeClassroom(ActionEvent event) {
         if(!Objects.equals(showClassrooms.getValue(), "")) {
             Vector<Classroom> classrooms = Application.getClassrooms();
-            String id = "";
-            for (Classroom classroom : classrooms) {
-                if (Objects.equals(classroom.toString(), showClassrooms.getValue())) {
-                    id = classroom.classroomId;
+            for (Classroom c : classrooms) {
+                String[] classroomValues = showClassrooms.getValue().split("@");
+                System.out.println(classroomValues[0]);
+                if (Objects.equals(c.getClassroomId(), classroomValues[0])) {
+                    if(db.removeClassroom(c.getClassroomId())) {
+                        classroomValidator.setStyle("-fx-text-fill: green");
+                        classroomValidator.setText("Classroom Removed");
+                        initialize(null,null);
+                    } else {
+                        classroomValidator.setStyle("-fx-text-fill: red");
+                        classroomValidator.setText("Classroom Removal Failed...");
+                    }
+                    return;
                 }
             }
-            if (db.removeClassroom(String.valueOf(id))) {
-                teacherValidator.setStyle("-fx-text-fill: red");
-                teacherValidator.setText("Classroom Removed");
-                initialize(null,null);
-            } else {
-                teacherValidator.setStyle("-fx-text-fill: red");
-                teacherValidator.setText("Classroom Removal Failed...");
-            }
+            classroomValidator.setStyle("-fx-text-fill: red");
+            classroomValidator.setText("Classroom doesn't exists...");
         } else {
-            teacherValidator.setStyle("-fx-text-fill: red");
-            teacherValidator.setText("No Classroom selected...");
+            classroomValidator.setStyle("-fx-text-fill: red");
+            classroomValidator.setText("No Classroom selected...");
         }
     }
 
     @FXML
     void addLecture(ActionEvent event) {
-
         if(!Objects.equals(showDays.getValue(), "") && !Objects.equals(showSlots.getValue(), "") && !Objects.equals(showClassrooms.getValue(), "") && !Objects.equals(tCourse.getValue(), "") && !Objects.equals(tSection.getValue(), "")) {
             if(isLab.selectedProperty().asObject().getValue() || isClass.selectedProperty().asObject().getValue()) {
                 Vector<Lecture> lectures = Application.getLectures();
@@ -400,9 +441,73 @@ public class AdminController implements Initializable {
 
     @FXML
     void removeLecture(ActionEvent event) {
-
+        if(!Objects.equals(showSlots1.getValue(), "") && !Objects.equals(showDays1.getValue(), "")) {
+            Vector<Lecture> lectures = Application.getLectures();
+            for (Lecture l : lectures) {
+                if (Objects.equals(l.getSlot(), showSlots1.getValue()) && Objects.equals(l.getDay(), showDays1.getValue())) {
+                    if(db.removeLecture(l.getLectureId())) {
+                        timetableValidator.setStyle("-fx-text-fill: green");
+                        timetableValidator.setText("Lecture Removed");
+                        initialize(null,null);
+                    } else {
+                        timetableValidator.setStyle("-fx-text-fill: red");
+                        timetableValidator.setText("Lecture Removal Failed...");
+                    }
+                    return;
+                }
+            }
+            timetableValidator.setStyle("-fx-text-fill: red");
+            timetableValidator.setText("Lecture doesn't exists...");
+        } else {
+            timetableValidator.setStyle("-fx-text-fill: red");
+            timetableValidator.setText("No Lecture selected...");
+        }
     }
 
+    @FXML
+    void announce(ActionEvent event) {
+        if(!Objects.equals(qCourse.getValue(), "") && !Objects.equals(qSection.getValue(), "") && !Objects.equals(qTopic.getText(), "")) {
+            Vector<Quiz> quizzes = Application.getQuizzes();
+            int quizId = 0;
+            boolean found = false;
+            for(Quiz q : quizzes) {
+                if(Objects.equals(q.getCourseId(), qCourse.getValue()) && Objects.equals(q.getSection(), qSection.getValue())) {
+                    quizId = q.getQuizId();
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                if(quizzes.size() == 0 || quizzes.size() == 1) {
+                    quizId = quizzes.size();
+                } else {
+                    quizId += 1;
+                }
+            }
+            if(db.addQuiz(quizId, qCourse.getValue(), qSection.getValue(), qTopic.getText())) {
+                quizValidator.setText("Quiz Added");
+                Vector<Student> students = Application.getStudents();
+                for(Student s : students) {
+                    if(Objects.equals(s.getSection(), qSection.getValue()) && s.getCourseId().contains(qCourse.getValue())) {
+                        s.setNotification("Quiz Announced of Course (" + qCourse.getValue() + "), Topic (" + qTopic.getText() + ")");
+                    }
+                }
+                quizValidator.setStyle("-fx-background-color: white; -fx-text-fill: green");
+                quizValidator.setText("Quiz Added");
+            } else {
+                quizValidator.setStyle("-fx-background-color: white; -fx-text-fill: red");
+                quizValidator.setText("Error can't add quiz");
+            }
+        } else {
+            quizValidator.setStyle("-fx-background-color: white; -fx-text-fill: red");
+            quizValidator.setText("Input fields shouldn't be empty...");
+        }
+    }
+
+    @FXML
+    void backTeacher(ActionEvent event) throws IOException {
+        Application.changeScene("teacher-page.fxml", "Tacher Panel", 773, 423);
+    }
 
     @FXML
     void addTeacher(ActionEvent event) {
@@ -436,23 +541,36 @@ public class AdminController implements Initializable {
     void removeTeacher(ActionEvent event) {
         if(!Objects.equals(showTeachers.getValue(), "")) {
             Vector<Teacher> teachers = Application.getTeachers();
-            int id = 0;
-            for (int i = 0; i < teachers.size(); i++) {
-                if (Objects.equals(teachers.get(i).email, tEmail.getText())) {
-                    id = i;
+            for (Teacher t : teachers) {
+                if (Objects.equals(t.getName(), showTeachers.getValue())) {
+                    if(db.removeTeacher(t.email)) {
+                        teacherValidator.setStyle("-fx-text-fill: green");
+                        teacherValidator.setText("Teacher Removed");
+                        initialize(null,null);
+                    } else {
+                        teacherValidator.setStyle("-fx-text-fill: red");
+                        teacherValidator.setText("Teacher Removal Failed...");
+                    }
+                    return;
                 }
             }
-            if (db.removeTeacher(String.valueOf(id))) {
-                teacherValidator.setStyle("-fx-text-fill: red");
-                teacherValidator.setText("Teacher Removed");
-                initialize(null,null);
-            } else {
-                teacherValidator.setStyle("-fx-text-fill: red");
-                teacherValidator.setText("Teacher Removal Failed...");
-            }
+            teacherValidator.setStyle("-fx-text-fill: red");
+            teacherValidator.setText("Teacher doesn't exists...");
         } else {
             teacherValidator.setStyle("-fx-text-fill: red");
             teacherValidator.setText("No Teacher selected...");
+        }
+    }
+
+    private void initialize_slots1(String Day) {
+        if(showSlots1 != null) {
+            Vector<Lecture> lectures = Application.getLectures();
+            showSlots1.getItems().clear();
+            for(Lecture l : lectures) {
+                if(Objects.equals(l.getDay(), Day)) {
+                    showSlots1.getItems().add(l.getSlot());
+                }
+            }
         }
     }
 
@@ -517,6 +635,26 @@ public class AdminController implements Initializable {
                 showCourses.getItems().addAll(courses.get(i).getCourseName());
             }
         }
+        if(qCourse != null) {
+            qSection.disableProperty().asObject().setValue(true);
+            qCourse.getItems().clear();
+            for(int i = 0; i < courses.size(); i++) {
+                if(Application.getCurrentTeacher().getCourses().contains(courses.get(i).getCourseId()))
+                    qCourse.getItems().addAll(courses.get(i).getCourseId());
+            }
+            qCourse.valueProperty().addListener((ov, t, t1) -> {
+                if(!Objects.equals(t1, "")) {
+                    qSection.disableProperty().asObject().setValue(false);
+                    qSection.getItems().clear();
+                    for(int i = 0; i < courses.size(); i++) {
+                        if(Objects.equals(courses.get(i).getCourseId(), qCourse.getValue())) {
+                            Vector<String> sections = courses.get(i).getSections();
+                            qSection.getItems().addAll(sections.get(i));
+                        }
+                    }
+                }
+            });
+        }
         if(tCourse != null) {
             tSection.disableProperty().asObject().setValue(true);
             tCourse.getItems().clear();
@@ -548,18 +686,23 @@ public class AdminController implements Initializable {
             Vector<Classroom> classrooms = Application.getClassrooms();
             if (showDays == null) {
                 for(Classroom c : classrooms) {
-                    showClassrooms.getItems().addAll(c.classroomId + " | " + c.type);
+                    showClassrooms.getItems().addAll(c.classroomId + "@" + c.type);
                 }
             }
         }
         if(showDays != null) {
             showDays.getItems().clear();
             showDays1.getItems().clear();
-            String[] days = {"Monday", "Tuesday", "Webnesday", "Thursday", "Friday"};
+            String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
             for(String s : days) {
                 showDays1.getItems().addAll(s);
                 showDays.getItems().addAll(s);
             }
+            showDays1.valueProperty().addListener((ov, t, t1) -> {
+                if(!Objects.equals(t1, "")) {
+                    initialize_slots1(t1);
+                }
+            });
             showDays.valueProperty().addListener((ov, t, t1) -> {
                 if(!Objects.equals(t1, "")) {
                     initialize_classrooms();
@@ -572,7 +715,7 @@ public class AdminController implements Initializable {
                 Vector<Course> st_courses = Application.getCourses();
                 for(Course c : st_courses) {
                     if(c.getSections().contains(selectSection.getText())) {
-                        showStudents.getItems().add(c.getCourseId() + " | " + c.getCourseName());
+                        showStudents.getItems().add(c.getCourseId() + "@" + c.getCourseName());
                     }
                 }
             }
@@ -617,6 +760,26 @@ public class AdminController implements Initializable {
             dayLabel.setText(option == 0 ? "Monday" : option == 1 ? "Tuesday" : option == 2 ? "Wednesday" : option == 3 ? "Thursday" : "Friday");
             setTable(dayLabel.getText());
         }
+        if(sCourseView != null) {
+            sCourseName.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+            sQuizTopic.setCellValueFactory(new PropertyValueFactory<>("topic"));
+            sCourseView.getItems().clear();
+            sQuizTable.getItems().clear();
+            Vector<Course> Ccourses = Application.getCourses();
+            Student s = Application.getCurrentStudent();
+            Vector<Quiz> quizzes = Application.getQuizzes();
+            for(Course c : Ccourses) {
+                if(c.getSections().contains(s.getSection()) && s.getCourseId().contains(c.getCourseId())) {
+                    for(Quiz q : quizzes) {
+                        if(Objects.equals(q.getCourseId(), c.courseId) && Objects.equals(q.getSection(), s.getSection())) {
+                            sCourseView.getItems().add(c);
+                            sQuizTable.getItems().add(q);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
     private void setTable(String present_day) {
         ObservableList<Classroom> table1 = t1.getItems();
@@ -628,14 +791,33 @@ public class AdminController implements Initializable {
             Lecture found = null;
             for(Lecture l : lectures) {
                 if(Objects.equals(l.getClassroomId(), c.getClassroomId()) && Objects.equals(l.getDay(), present_day)) {
-                    int idx = slots_name.indexOf(l.getSlot());
-                    slots_found[idx] = true;
-                    found = l;
-                    Vector<Course> courses = Application.getCourses();
-                    for(Course cc : courses) {
-                        if(Objects.equals(cc.getCourseId(), l.getCourseId())) {
-                            found.setCourseId(cc.getCourseName() + "   |   " + found.getSection());
-                            break;
+                    int idx = -1;
+                    if(isStudent != null) {
+                        Student s = Application.getCurrentStudent();
+                        if(s.getCourseId().contains(l.getCourseId()) && Objects.equals(s.getSection(), l.getSection())) {
+                            idx = slots_name.indexOf(l.getSlot());
+                            slots_found[idx] = true;
+                            found = l;
+                        }
+                    } else if(isAdmin != null) {
+                        idx = slots_name.indexOf(l.getSlot());
+                        slots_found[idx] = true;
+                        found = l;
+                    } else if(isTeacher != null) {
+                        Teacher t = Application.getCurrentTeacher();
+                        if(t.getCourses().contains(l.getCourseId()) && t.getSections().contains(l.getSection())) {
+                            idx = slots_name.indexOf(l.getSlot());
+                            slots_found[idx] = true;
+                            found = l;
+                        }
+                    }
+                    if(found != null) {
+                        Vector<Course> courses = Application.getCourses();
+                        for(Course cc : courses) {
+                            if(Objects.equals(cc.getCourseId(), l.getCourseId())) {
+                                found.setCourseId(cc.getCourseName() + "   |   " + found.getSection());
+                                break;
+                            }
                         }
                     }
                     break;
@@ -690,14 +872,33 @@ public class AdminController implements Initializable {
             Lecture found = null;
             for(Lecture l : lectures) {
                 if(Objects.equals(l.getClassroomId(), c.getClassroomId()) && Objects.equals(l.getDay(), present_day)) {
-                    int idx = slots_name.indexOf(l.getSlot());
-                    slots_found[idx] = true;
-                    found = l;
-                    Vector<Course> courses = Application.getCourses();
-                    for(Course cc : courses) {
-                        if(Objects.equals(cc.getCourseId(), l.getCourseId())) {
-                            found.setCourseId(cc.getCourseName() + "   |   " + found.getSection());
-                            break;
+                    int idx = -1;
+                    if(isStudent != null) {
+                        Student s = Application.getCurrentStudent();
+                        if(s.getCourseId().contains(l.getCourseId()) && Objects.equals(s.getSection(), l.getSection())) {
+                            idx = slots_name.indexOf(l.getSlot());
+                            slots_found[idx] = true;
+                            found = l;
+                        }
+                    } else if(isAdmin != null) {
+                        idx = slots_name.indexOf(l.getSlot());
+                        slots_found[idx] = true;
+                        found = l;
+                    } else if(isTeacher != null) {
+                        Teacher t = Application.getCurrentTeacher();
+                        if(t.getCourses().contains(l.getCourseId()) && t.getSections().contains(l.getSection())) {
+                            idx = slots_name.indexOf(l.getSlot());
+                            slots_found[idx] = true;
+                            found = l;
+                        }
+                    }
+                    if(found != null) {
+                        Vector<Course> courses = Application.getCourses();
+                        for(Course cc : courses) {
+                            if(Objects.equals(cc.getCourseId(), l.getCourseId())) {
+                                found.setCourseId(cc.getCourseName() + "   |   " + found.getSection());
+                                break;
+                            }
                         }
                     }
                     break;

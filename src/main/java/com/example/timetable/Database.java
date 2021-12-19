@@ -133,6 +133,9 @@ public class Database {
                 for(Student s : students) {
                     if(Objects.equals(s.getId(), rs.getString("STUDENTID"))) {
                         s.getCourseId().add(rs.getString("COURSEID"));
+                        if(!Objects.equals(rs.getString("NOTIFICATION"), "")) {
+                            s.setNotification(rs.getString("NOTIFICATION"));
+                        }
                         found = true;
                     }
                 }
@@ -144,6 +147,9 @@ public class Database {
                     s.setName(rs.getString("NAME"));
                     s.setSection(rs.getString("SECTION"));
                     s.getCourseId().add(rs.getString("COURSEID"));
+                    if(!Objects.equals(rs.getString("NOTIFICATION"), "")) {
+                        s.setNotification(rs.getString("NOTIFICATION"));
+                    }
                     students.add(s);
                 }
             }
@@ -151,6 +157,27 @@ public class Database {
             e.printStackTrace();
         }
         return students;
+    }
+
+    public Vector<Quiz> getQuizzes() {
+        Vector<Quiz> quizzes = new Vector<>();
+        try {
+            Statement st = connection.createStatement();
+            String sql = "SELECT * FROM QUIZ";
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                boolean found = false;
+                Quiz q = new Quiz();
+                q.setCourseId(rs.getString("COURSEID"));
+                q.setQuizId(rs.getInt("QUIZID"));
+                q.setTopic(rs.getString("TOPIC"));
+                q.setSection(rs.getString("SECTION"));
+                quizzes.add(q);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quizzes;
     }
 
     public Vector<Teacher> getTeachers() {
@@ -185,10 +212,22 @@ public class Database {
         return teachers;
     }
 
+    public boolean loginTeacher(String Email, String Pss) {
+        Vector<Teacher> teachers = Application.getTeachers();
+        for(Teacher t : teachers) {
+            if(Objects.equals(t.getEmail(), Email) && Objects.equals(t.getPss(), Pss)) {
+                Application.setCurrentTeacher(t);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean loginStudent(String Email, String Pss) {
         Vector<Student> students = Application.getStudents();
         for(Student s: students) {
             if(Objects.equals(s.getEmail(), Email) && Objects.equals(s.getPss(), Pss)) {
+                Application.setCurrentStudent(s);
                 return true;
             }
         }
@@ -201,6 +240,47 @@ public class Database {
             if(Objects.equals(a.getEmail(), Email) && Objects.equals(a.getPss(), Pss)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean addQuiz(int quizId, String courseId, String section, String topic) {
+        Vector<Quiz> quizzes = Application.getQuizzes();
+        try {
+            Statement st = connection.createStatement();
+            for(Quiz q : quizzes) {
+                if(q.getQuizId() == quizId) {
+                    String sql = "UPDATE QUIZ SET TOPIC = '" + topic + "' WHERE QUIZID = " + quizId;
+                    st.executeUpdate(sql);
+                    q.setTopic(topic);
+                    Application.setQuizzes(quizzes);
+                    return true;
+                }
+            }
+            String sql = "INSERT INTO QUIZ VALUES ('"+ topic +"', "+ quizId +", '"+ courseId +"', '"+ section +"')";
+            st.executeUpdate(sql);
+            Quiz q = new Quiz();
+            q.setTopic(topic);
+            q.setQuizId(quizId);
+            q.setSection(section);
+            q.setCourseId(courseId);
+            Application.getQuizzes().add(q);
+            sql = "UPDATE LECTURE SET QUIZID = " + quizId + " WHERE COURSEID = '" + courseId + "' AND SECTION = '" + section +"'";
+            st.executeUpdate(sql);
+            String notifi = "Quiz Announced of Course (" + courseId + "), Topic (" + topic + ")";
+            sql = "UPDATE STUDENT SET NOTIFICATION = '" + notifi + "' WHERE COURSEID = '" + courseId + "' AND SECTION = '" + section +"'";
+            st.executeUpdate(sql);
+            Vector<Lecture> lectures = Application.getLectures();
+            for(int i = 0; i < lectures.size(); i++){
+                if(Objects.equals(lectures.get(i).getCourseId(), courseId) && Objects.equals(lectures.get(i).getSection(), section)) {
+                    lectures.get(i).setQuizId(quizId);
+                    Application.setLectures(lectures);
+                    break;
+                }
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -266,11 +346,19 @@ public class Database {
     public boolean removeCourse(String cid) {
         try {
             Statement st = connection.createStatement();
-            String sql = "DELETE FROM COURSE WHERE COURSEID = '"+ cid +"'";
+            String sql = "DELETE FROM STUDENT WHERE COURSEID = '"+ cid +"'";
             st.executeUpdate(sql);
-            Application.getCourses().remove(Integer.parseInt(cid));
+            sql = "DELETE FROM LECTURE WHERE COURSEID = '"+ cid +"'";
+            st.executeUpdate(sql);
+            sql = "DELETE FROM QUIZ WHERE COURSEID = '"+ cid +"'";
+            st.execute(sql);
+            sql = "DELETE FROM TEACHER WHERE COURSEID = '"+ cid +"'";
+            st.executeUpdate(sql);
+            sql = "DELETE FROM COURSE WHERE COURSEID = '"+ cid +"'";
+            st.executeUpdate(sql);
+            Application.initialize();
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return false;
@@ -278,23 +366,39 @@ public class Database {
     public boolean removeClassroom(String cid) {
         try {
             Statement st = connection.createStatement();
-            String sql = "DELETE FROM CLASSROOM WHERE CLASSROOMID = '"+ cid +"'";
+            String sql = "DELETE FROM LECTURE WHERE CLASSROOMID = '"+ cid +"'";
             st.executeUpdate(sql);
-            Application.getClassrooms().remove(Integer.parseInt(cid));
+            sql = "DELETE FROM CLASSROOM WHERE CLASSROOMID = '"+ cid +"'";
+            st.executeUpdate(sql);
+            Application.initialize();
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public boolean removeTeacher(String tid) {
+
+    public boolean removeLecture(String lid) {
         try {
             Statement st = connection.createStatement();
-            String sql = "DELETE FROM TEACHER WHERE TEACHERID = '"+tid+"'";
+            String sql = "DELETE FROM LECTURE WHERE LECTUREID = '"+lid+"'";
             st.executeUpdate(sql);
-            Application.getTeachers().remove(Integer.parseInt(tid));
+            Application.initialize();
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean removeTeacher(String email) {
+        try {
+            Statement st = connection.createStatement();
+            String sql = "DELETE FROM TEACHER WHERE EMAIL = '"+email+"'";
+            st.executeUpdate(sql);
+            Application.initialize();
+            return true;
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return false;
@@ -358,7 +462,7 @@ public class Database {
                 }
             }
             Statement st = connection.createStatement();
-            String sql = "INSERT INTO STUDENT VALUES ('"+ Name +"', '"+ Email +"', '"+ id +"', '"+ Pss +"', '"+ Course +"', '"+ Section +"')";
+            String sql = "INSERT INTO STUDENT VALUES ('"+ Name +"', '"+ Email +"', '"+ id +"', '"+ Pss +"', '"+ Course +"', '"+ Section +"', '')";
             st.executeUpdate(sql);
             if(!found) {
                 Student s = new Student();
@@ -368,6 +472,7 @@ public class Database {
                 s.setSection(Section);
                 s.setEmail(Email);
                 s.setId(id);
+                s.setNotification("");
                 Application.getStudents().add(s);
             }
             return true;

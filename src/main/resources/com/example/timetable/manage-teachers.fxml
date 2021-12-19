@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="501.0" prefWidth="900.0" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.AdminController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="501.0" prefWidth="900.0" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.timetable.DynamicController">
    <children>
          <ImageView fitHeight="501.0" fitWidth="361.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -84,11 +84,6 @@
                            </children>
                         </AnchorPane>
                      </content>
-                  </TitledPane>
-                  <TitledPane alignment="CENTER" animated="false" text="UPDATE">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
                   </TitledPane>
               </panes>
             </Accordion>

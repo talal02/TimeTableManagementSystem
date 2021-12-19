@@ -54,7 +54,7 @@
             <Button layoutX="99.0" layoutY="369.0" mnemonicParsing="false" onAction="#signupPressed" text="SIGNUP" />
             <Label fx:id="loginMsg" alignment="CENTER" layoutX="58.0" layoutY="331.0" prefHeight="17.0" prefWidth="378.0">
                <font>
-                  <Font name="Bell MT" size="20.0" />
+                  <Font name="Bell MT" size="16.0" />
                </font>
             </Label>
          </children>

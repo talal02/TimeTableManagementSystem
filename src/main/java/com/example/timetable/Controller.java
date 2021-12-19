@@ -5,11 +5,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class Controller {
+
+    @FXML
+    private Text sNotification;
 
     @FXML
     private TextField email;
@@ -86,7 +90,33 @@ public class Controller {
 
     @FXML
     void viewTimeTable(ActionEvent event) throws IOException {
-        Application.changeScene("timetable.fxml", "Time Table", 1280, 720);
+        if(Application.getCurrentStudent() != null) {
+            Application.changeScene("student-timetable.fxml", "Time Table", 1280, 720);
+        } else if(Application.getCurrentTeacher() != null) {
+            Application.changeScene("teacher-timetable.fxml", "Time Table", 1280, 720);
+        } else {
+            Application.changeScene("timetable.fxml", "Time Table", 1280, 720);
+        }
+    }
+
+    @FXML
+    void announceQuiz(ActionEvent event) throws IOException {
+        Application.changeScene("announce-quiz.fxml", "Announce Quiz", 773, 423);
+    }
+
+    @FXML
+    void cancelClass(ActionEvent event) {
+
+    }
+
+    @FXML
+    void viewQuizes(ActionEvent event) throws IOException {
+        Application.changeScene("view-quiz.fxml", "Quiz", 800, 610);
+    }
+
+    @FXML
+    void showNotification(ActionEvent event) {
+        sNotification.setText(Application.getCurrentStudent().getNotification());
     }
 
     @FXML
@@ -95,11 +125,32 @@ public class Controller {
             if(db.loginAdmin(email.getText(), password.getText())) {
                 loginMsg.setStyle("-fx-text-fill: green");
                 loginMsg.setText("Login Successful...");
-                Application.changeScene("admin-page.fxml", "Admin Panel", 773, 423);
+                Application.changeScene("admin-page.fxml", "Admin Panel", 900, 540);
             } else {
                 loginMsg.setStyle("-fx-text-fill: red");
-                loginMsg.setText("Admin Doesn't Exists Or email/pss incorrect...");
+                loginMsg.setText("Admin Doesn't Exists or pss incorrect...");
             }
+        } else if(isStudent.selectedProperty().asObject().getValue()) {
+            if(db.loginStudent(email.getText(), password.getText())) {
+                loginMsg.setStyle("-fx-text-fill: green");
+                loginMsg.setText("Login Successful...");
+                Application.changeScene("student-page.fxml", "Admin Panel", 773, 423);
+            } else {
+                loginMsg.setStyle("-fx-text-fill: red");
+                loginMsg.setText("Student Doesn't Exists or pss incorrect...");
+            }
+        } else if(isTeacher.selectedProperty().asObject().getValue()) {
+            if(db.loginTeacher(email.getText(), password.getText())) {
+                loginMsg.setStyle("-fx-text-fill: green");
+                loginMsg.setText("Login Successful...");
+                Application.changeScene("teacher-page.fxml", "Admin Panel", 773, 423);
+            } else {
+                loginMsg.setStyle("-fx-text-fill: red");
+                loginMsg.setText("Teacher Doesn't Exists or pss incorrect...");
+            }
+        } else {
+            loginMsg.setStyle("-fx-text-fill: red");
+            loginMsg.setText("Choose (Admin/Student/Teacher)");
         }
     }
 
@@ -135,6 +186,8 @@ public class Controller {
 
     @FXML
     void logoutPressed(ActionEvent event) throws IOException {
+        Application.setCurrentStudent(null);
+        Application.setCurrentTeacher(null);
         Application.changeScene("login-page.fxml", "Main Page", 773, 423);
     }
 

@@ -16,20 +16,23 @@ public class Application extends javafx.application.Application {
     private static Vector<Teacher> teachers;
     private static Vector<Classroom> classrooms;
     private static Vector<Lecture> lectures;
+    private static Vector<Quiz> quizzes;
+    private static Student currentStudent;
+    private static Teacher currentTeacher;
 
     @Override
     public void start(Stage stage) throws IOException, SQLException, ClassNotFoundException {
         s = stage;
         initialize();
         s.resizableProperty().asObject().setValue(false);
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("admin-page.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 900, 540);
+        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login-page.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 773, 423);
         stage.setTitle("Time Table Management System!");
         stage.setScene(scene);
         stage.show();
     }
 
-    public void initialize() throws SQLException, ClassNotFoundException {
+    public static void initialize() throws SQLException, ClassNotFoundException {
         Database db = new Database();
         admins = db.getAdmins();
         students = db.getStudents();
@@ -37,22 +40,23 @@ public class Application extends javafx.application.Application {
         teachers = db.getTeachers();
         classrooms = db.getClassrooms();
         lectures = db.getLectures();
+        quizzes = db.getQuizzes();
 
-        for(Admin a : admins) {
-            System.out.println(a.getEmail());
-        }
-
-        for(Student s: students) {
-            System.out.println(s.getEmail());
-        }
-
-        for(Course c: courses) {
-            System.out.println(c.getCourseId());
-        }
-
-        for(Lecture l: lectures) {
-            System.out.println(l.getCourseId());
-        }
+//        for(Admin a : admins) {
+//            System.out.println(a.getEmail());
+//        }
+//
+//        for(Student s: students) {
+//            System.out.println(s.getEmail());
+//        }
+//
+//        for(Course c: courses) {
+//            System.out.println(c.getCourseId());
+//        }
+//
+//        for(Lecture l: lectures) {
+//            System.out.println(l.getCourseId());
+//        }
     }
 
     public static void main(String[] args) {
@@ -112,5 +116,29 @@ public class Application extends javafx.application.Application {
 
     public static void setLectures(Vector<Lecture> lectures) {
         Application.lectures = lectures;
+    }
+
+    public static Student getCurrentStudent() {
+        return currentStudent;
+    }
+
+    public static void setCurrentStudent(Student currentStudent) {
+        Application.currentStudent = currentStudent;
+    }
+
+    public static Teacher getCurrentTeacher() {
+        return currentTeacher;
+    }
+
+    public static void setCurrentTeacher(Teacher currentTeacher) {
+        Application.currentTeacher = currentTeacher;
+    }
+
+    public static Vector<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public static void setQuizzes(Vector<Quiz> quizzes) {
+        Application.quizzes = quizzes;
     }
 }

@@ -8,7 +8,16 @@ public class Student {
     String pss;
     String section;
     Vector<String> courseId = new Vector<>();
+    String Notification = "";
     String Id;
+
+    public String getNotification() {
+        return Notification;
+    }
+
+    public void setNotification(String notification) {
+        Notification = notification;
+    }
 
     public String getName() {
         return name;
