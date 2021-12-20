@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.timetable.DynamicController">
+   <children>
+      <TableView fx:id="sCourseView" layoutX="56.0" layoutY="51.0" prefHeight="500.0" prefWidth="350.0">
+         <columns>
+            <TableColumn fx:id="sCourseName" prefWidth="349.0" text="Course" />
+         </columns>
+      </TableView>
+      <TableView fx:id="sQuizTable" layoutX="406.0" layoutY="51.0" prefHeight="500.0" prefWidth="350.0">
+         <columns>
+            <TableColumn fx:id="sQuizTopic" prefWidth="349.0" text="Quiz Topic" />
+         </columns>
+      </TableView>
+      <Button layoutX="365.0" layoutY="574.0" mnemonicParsing="false" onAction="#backStudent" text="Back" />
+   </children>
+</AnchorPane>

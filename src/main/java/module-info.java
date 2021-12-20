@@ -5,6 +5,10 @@ module com.example.timetable {
     requires com.oracle.database.jdbc;
 
 
-    opens com.example.timetable to javafx.fxml;
-    exports com.example.timetable;
+    opens com.timetable to javafx.fxml;
+    exports com.timetable;
+    exports com.database;
+    opens com.database to javafx.fxml;
+    exports com.base;
+    opens com.base to javafx.fxml;
 }
