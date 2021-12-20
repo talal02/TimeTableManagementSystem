@@ -13,11 +13,11 @@ public class Teacher {
 
     @Override
     public String toString() {
-        String data = name + "," + email + "," + pss + "," + "," + tid + ",";
+        String data = name + "," + email + "," + pss + "," + tid + ",";
         String toReturn = "";
         for(int i = 0; i < courses.size(); i++) {
             toReturn += data + courses.get(i) + "," + sections.get(i);
-            toReturn += "@";
+            toReturn += "~";
         }
         return toReturn + "\n";
     }

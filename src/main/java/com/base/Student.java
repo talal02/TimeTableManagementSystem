@@ -17,7 +17,7 @@ public class Student {
         String toReturn = "";
         for(String c : courseId) {
             toReturn += data + c;
-            toReturn += "@";
+            toReturn += "~";
         }
         return toReturn + "\n";
     }

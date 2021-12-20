@@ -11,16 +11,6 @@ import java.util.Objects;
 import java.util.Vector;
 
 public class TimeTableFile implements PersistenceHandler {
-    public static void main(String[] hell) {
-        TimeTableFile t = new TimeTableFile();
-        t.getLectures();
-        t.getCourses();
-        t.getStudents();
-        t.getAdmins();
-        t.getClassrooms();
-        t.getQuizzes();
-        t.getTeachers();
-    }
 
     public static TimeTableFile instance;
 
@@ -63,7 +53,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(slots.size());
         return slots;
     }
 
@@ -99,7 +88,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(lectures.size());
         return lectures;
     }
 
@@ -140,7 +128,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(classrooms.size());
         return classrooms;
     }
 
@@ -173,7 +160,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(admins.size());
         return admins;
     }
 
@@ -194,11 +180,11 @@ public class TimeTableFile implements PersistenceHandler {
             String[] lines = sb.toString().split("\n");
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
-                    String[] token = s.split("@");
+                    String[] token = s.split("~");
                     Course c = new Course();
                     for(String t : token) {
                         if(!Objects.equals(t, "")) {
-                            String[] tokens = s.split(",");
+                            String[] tokens = t.split(",");
                             c.setCourseId(tokens[0]);
                             c.setCourseName(tokens[1]);
                             c.setCreditHrs(Integer.parseInt(tokens[2]));
@@ -211,7 +197,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(courses.size());
         return courses;
     }
 
@@ -232,11 +217,11 @@ public class TimeTableFile implements PersistenceHandler {
             String[] lines = sb.toString().split("\n");
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
-                    String[] token = s.split("@");
+                    String[] token = s.split("~");
                     Student st = new Student();
                     for(String t : token) {
                         if(!Objects.equals(t, "")) {
-                            String[] tokens = s.split(",");
+                            String[] tokens = t.split(",");
                             st.setName(tokens[0]);
                             st.setEmail(tokens[1]);
                             st.setPss(tokens[2]);
@@ -252,7 +237,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(students.size());
         return students;
     }
 
@@ -285,7 +269,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(quizzes.size());
         return quizzes;
     }
 
@@ -306,11 +289,11 @@ public class TimeTableFile implements PersistenceHandler {
             String[] lines = sb.toString().split("\n");
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
-                    String[] token = s.split("@");
+                    String[] token = s.split("~");
                     Teacher st = new Teacher();
                     for(String t : token) {
                         if(!Objects.equals(t, "")) {
-                            String[] tokens = s.split(",");
+                            String[] tokens = t.split(",");
                             st.setName(tokens[0]);
                             st.setEmail(tokens[1]);
                             st.setPss(tokens[2]);
@@ -325,7 +308,6 @@ public class TimeTableFile implements PersistenceHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(teachers.size());
         return teachers;
     }
 

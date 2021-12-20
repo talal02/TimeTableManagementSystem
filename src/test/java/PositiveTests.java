@@ -1,11 +1,10 @@
 import com.database.Database;
 import com.database.PersistenceHandler;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class PositiveTests {
     PersistenceHandler db;
 
@@ -16,43 +15,42 @@ public class PositiveTests {
     }
 
     @Test
-    public void testAddClass() {
+    public void testA() {
         Assertions.assertTrue(db.addClassroom("C-306", "Class"));
     }
 
     @Test
-    public void testAddCourse() {
-        Assertions.assertTrue(db.addCourse("CS-1000", "IICT", 3, "A,B,C"));
+    public void testB() {
+        Assertions.assertTrue(db.addCourse("CS-1000", "IICT", 1, "A"));
     }
 
     @Test
-    public void testAddTeacher() {
+    public void testC() {
         Assertions.assertTrue(db.addTeacher(""+99, "Zubair Khan", "zubair.khan@nu.edu.pk", "1234", "CS-1000", "A"));
     }
 
     @Test
-    public void testAddStudent() {
+    public void testD() {
         Assertions.assertTrue(db.addStudent("i190545@nu.edu.pk", "1234", ""+99, "CS-1000", "A", "Ahmed Ali"));
     }
 
     @Test
-    public void testAddAdmin() {
+    public void testE() {
         Assertions.assertTrue(db.addAdmin("admin@nu.edu.pk", "1234", "" + 2));
     }
 
     @Test
-    public void testRemoveClass() {
-        Assertions.assertTrue(db.removeClassroom("CS-306"));
+    public void testF() {
+        Assertions.assertTrue(db.removeClassroom("C-306"));
     }
 
     @Test
-    public void testRemoveCourse() {
-        Assertions.assertTrue(db.removeCourse("CS-1000"));
-    }
-
-    @Test
-    public void testRemoveTeacher() {
+    public void testG() {
         Assertions.assertTrue(db.removeTeacher("zubair.khan@nu.edu.pk"));
     }
 
+    @Test
+    public void testH() {
+        Assertions.assertTrue(db.removeCourse("CS-1000"));
+    }
 }

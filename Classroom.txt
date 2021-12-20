@@ -1,0 +1,8 @@
+C-301,Class
+C-302,Class
+C-303,Class
+C-304,Class
+C-305,Class
+Rawal-I,Lab
+Rawal-II,Lab
+Margalla-I,Lab

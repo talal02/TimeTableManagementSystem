@@ -334,7 +334,8 @@ public class Database implements PersistenceHandler {
             c.setType(Type);
             String sql = "INSERT INTO CLASSROOM VALUES ('"+ classroomId +"', '"+ Type +"')";
             st.executeUpdate(sql);
-            this.getClassrooms().add(c);
+            if(Application.getClassrooms() != null)
+                Application.getClassrooms().add(c);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -346,6 +347,7 @@ public class Database implements PersistenceHandler {
         Vector<Course> courses = this.getCourses();
         for(Course c : courses) {
             if(Objects.equals(c.getCourseId(), cid)){
+                System.out.println("True");
                 return false;
             }
         }
@@ -361,7 +363,8 @@ public class Database implements PersistenceHandler {
                 c.getSections().add(s);
                 st.executeUpdate(sql);
             }
-            this.getCourses().add(c);
+            if(Application.getCourses() != null)
+                Application.getCourses().add(c);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -491,7 +494,8 @@ public class Database implements PersistenceHandler {
             t.setName(name);
             t.getSections().add(section);
             t.getCourses().add(cid);
-            Application.getTeachers().add(t);
+            if(Application.getTeachers() != null)
+                Application.getTeachers().add(t);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -514,7 +518,8 @@ public class Database implements PersistenceHandler {
             a.setPss(pss);
             a.setEmail(email);
             a.setId(id);
-            this.getAdmins().add(a);
+            if(Application.getAdmins() != null)
+                Application.getAdmins().add(a);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -551,7 +556,8 @@ public class Database implements PersistenceHandler {
                 s.setEmail(Email);
                 s.setId(id);
                 s.setNotification("");
-                Application.getStudents().add(s);
+                if(Application.getStudents() != null)
+                    Application.getStudents().add(s);
             }
             return true;
         } catch (SQLException e) {
