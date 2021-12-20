@@ -10,6 +10,35 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Vector;
 
+class HandleFile extends Thread {
+    File file;
+    public static String[] lines;
+    public HandleFile(File file) {
+        this.file = file;
+    }
+
+    @Override
+    public void run() {
+        synchronized (this) {
+            try {
+                FileReader fr=new FileReader(file);
+                BufferedReader br=new BufferedReader(fr);
+                StringBuffer sb=new StringBuffer();
+                String line;
+                while((line=br.readLine())!=null)
+                {
+                    sb.append(line);
+                    sb.append("\n");
+                }
+                fr.close();
+                lines = sb.toString().split("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
 public class TimeTableFile implements PersistenceHandler {
 
     public static TimeTableFile instance;
@@ -31,17 +60,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<String> slots = new Vector<>();
         try {
             File file=new File("Slots.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     if(s.contains(type)) {
@@ -56,21 +75,26 @@ public class TimeTableFile implements PersistenceHandler {
         return slots;
     }
 
+    private String[] getLines(File file) throws IOException {
+        FileReader fr=new FileReader(file);
+        BufferedReader br=new BufferedReader(fr);
+        StringBuffer sb=new StringBuffer();
+        String line;
+        while((line=br.readLine())!=null)
+        {
+            sb.append(line);
+            sb.append("\n");
+        }
+        fr.close();
+        String[] lines = sb.toString().split("\n");
+        return lines;
+    }
+
     public Vector<Lecture> getLectures() {
         Vector<Lecture> lectures = new Vector<>();
         try {
             File file=new File("Lecture.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split(",");
@@ -105,17 +129,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<Classroom> classrooms = new Vector<>();
         try {
             File file=new File("Classroom.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split(",");
@@ -135,17 +149,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<Admin> admins = new Vector<>();
         try {
             File file=new File("Admin.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split(",");
@@ -167,17 +171,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<Course> courses = new Vector<>();
         try {
             File file=new File("Course.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split("~");
@@ -204,17 +198,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<Student> students = new Vector<>();
         try {
             File file=new File("Student.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split("~");
@@ -244,17 +228,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<Quiz> quizzes = new Vector<>();
         try {
             File file=new File("Quiz.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split(",");
@@ -276,17 +250,7 @@ public class TimeTableFile implements PersistenceHandler {
         Vector<Teacher> teachers = new Vector<>();
         try {
             File file=new File("Teacher.txt");
-            FileReader fr=new FileReader(file);
-            BufferedReader br=new BufferedReader(fr);
-            StringBuffer sb=new StringBuffer();
-            String line;
-            while((line=br.readLine())!=null)
-            {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-            String[] lines = sb.toString().split("\n");
+            String[] lines = getLines(file);
             for(String s : lines){
                 if(!Objects.equals(s, "")) {
                     String[] token = s.split("~");

@@ -6,3 +6,5 @@ C-305,Class
 Rawal-I,Lab
 Rawal-II,Lab
 Margalla-I,Lab
+CS-109,Class
+C-333,Class
